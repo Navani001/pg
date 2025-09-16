@@ -1,10 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import { ButtonComponent } from "../button";
-import { Button, Input } from "@heroui/react";
-import { FcGoogle } from "react-icons/fc";
 import { signIn } from "next-auth/react";
-import { MdMessage, MdBusiness, MdVisibility, MdVisibilityOff } from "react-icons/md";
+import { InputField } from "../input";
+import { ButtonComponent } from "../button";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
@@ -36,105 +34,32 @@ export const Login = () => {
   };
 
   return (
-    <div className="w-[420px] bg-slate-50 rounded-2xl shadow-xl border-2 border-slate-200 p-8 font-medium">
-      
-      <div className="flex flex-col gap-6">
-        {/* RCS Branding Header */}
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <MdMessage className="text-3xl text-indigo-600" />
-            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">RCS Platform</h1>
-          </div>
-          <p className="text-slate-600 text-sm font-medium">Brand Messaging Solutions</p>
-        </div>
-
-        {/* Welcome Message */}
-        <div className="text-center border-b border-slate-200 pb-6">
-          <h2 className="text-xl font-semibold text-slate-800 mb-2">Welcome Back</h2>
-          <p className="text-slate-600 text-sm">Sign in to manage your RCS campaigns</p>
-        </div>
-        
-        {/* Login Form */}
-        <div className="space-y-4">
-          <Input
-            value={email}
-            onValueChange={(val) => setEmail(val)}
-            isRequired
-            placeholder="Email address"
-            size="lg"
-            variant="bordered"
-            classNames={{
-              input: "border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 text-black",
-              label: "text-slate-700 font-medium",
-            }}
-             
-           
-          />
-          <Input
-            value={password}
-            onValueChange={(val) => setPassword(val)}
-            isRequired
-            placeholder="Password"
-            type={isPasswordVisible ? "text" : "password"}
-            size="lg"
-            variant="bordered"
-            classNames={{
-              input: "border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 text-black",
-              label: "text-slate-700 font-medium",
-            }}
-            endContent={
-              <button
-                className="focus:outline-none"
-                type="button"
-                onClick={togglePasswordVisibility}
-                aria-label="toggle password visibility"
-              >
-                {isPasswordVisible ? (
-                  <MdVisibilityOff className="text-2xl text-slate-400 hover:text-slate-600 transition-colors pointer-events-none" />
-                ) : (
-                  <MdVisibility className="text-2xl text-slate-400 hover:text-slate-600 transition-colors pointer-events-none" />
-                )}
-              </button>
-            }
-          />
-          
-          <Button 
-            onClick={handleLogin}
-            isLoading={isLoading}
-            className="w-full bg-indigo-600 text-white font-semibold py-6 text-base hover:bg-indigo-700 transition-colors rounded-xl"
-            size="lg"
-          >
-            {isLoading ? "Signing in..." : "Sign In"}
-          </Button>
-        </div>
-        
-        {/* Divider */}
-        <div className="flex items-center">
-          <div className="flex-1 h-px bg-slate-300"></div>
-          <span className="px-4 text-sm text-slate-500 font-medium">or</span>
-          <div className="flex-1 h-px bg-slate-300"></div>
-        </div>
-        
-        {/* Google Sign In */}
-        <ButtonComponent
-          buttonIcon={<FcGoogle size={20} />}
-          handleOnClick={() => signIn("google", { redirectTo: "/" })}
-          buttonText="Continue with Google"
-          baseClassName="w-full border-2 border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold py-3 rounded-xl transition-colors"
-          textClassName="text-slate-700"
-        />
-        
-        
-        {/* Footer */}
-        <div className="text-center pt-4 border-t border-slate-200">
-          <p className="text-sm text-slate-600 font-medium">
-            Need an account?{" "}
-            <span className="text-indigo-600 hover:text-indigo-700 cursor-pointer font-semibold">
-              Contact Sales
-            </span>
-          </p>
-        </div>
+    <div className="w-[70%] !h-[900px] rounded-3xl border-white border-2 flex justify-center items-center backdrop-blur-[22px] shadow-md   p-8 pt-10  font-medium">
+    <div className=" w-[90%] h-[80%] flex justify-center items-center">
+    <div className="w-[469px] h-[642px] bg-[url(/loginImage.jpg)] bg-cover rounded-3xl flex justify-center items-center"/>   
+    <div className="w-[50%] h-full justify-center items-center">
+  <div className="w-full h-full flex justify-center items-center ">
+  <div className="flex w-[593px] justify-between items-center flex-col h-[547px] bg-white/25   rounded-r-3xl backdrop-blur-[22px]">
+    <div className="flex flex-col w-[95%] justify-between h-full p-8">
+      <div className="h-[10%] font-mont font-bold text-2xl flex justify-center items-center">Login </div>
+    <div className="py-5 flex flex-col gap-6 h-[6 0%]">
+    <div className="flex flex-col gap-4">
+    <span className=" font-mont font-bold text-xl">Username</span>
+        <InputField inputWrapperClassName="h-[3.5rem]" mainWrapperClassName="bg-transparent" className=""/>
       </div>
+      <div className="flex flex-col gap-4 mt-1">
+    <span className=" font-mont font-bold text-xl">Password</span>
+      <InputField inputWrapperClassName="h-[3.5rem]" mainWrapperClassName="bg-transparent" className=""/>
+      </div>
+    </div>
+      <div className="flex items-center justify-center h-[20%]"><ButtonComponent  buttonText="Login"  textClassName="text-xl" baseClassName="bg-primary border-0 h-auto py-3 rounded-xl text-white" isIcon={false}/></div>
+    </div>
+  </div>
+  
+  
+  </div>
+</div>
+    </div>
     </div>
   );
 };

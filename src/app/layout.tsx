@@ -22,8 +22,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Rcs Platform",
-  description: "Rcs Platform application",
+  title: "PG User",
+  description: "PG User application",
 };
 
 export default function RootLayout({
