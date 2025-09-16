@@ -3,7 +3,7 @@
 import { Login } from "@/component";
 export default function LoginPage() {
     return (
-        <div className="min-h-screen bg-[url(/loginBgImage.png)] w-full bg-cover flex items-center justify-center p-4 font-inter">
+        <div className="h-screen bg-[url(/loginBgImage.png)] w-full bg-cover flex items-center justify-center p-4 font-inter">
             <Login/>
             {/* <InputField/> */}
         </div>

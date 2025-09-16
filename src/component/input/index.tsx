@@ -169,7 +169,7 @@ export const InputField = React.memo(({
 						placeholderStyle
 					],
 					inputWrapper: cn(
-						'border border-content2-200 data-[hover=true]:border-content2-200',
+						'border border-content2-300 data-[hover=true]:border-content2-200',
 						'outline-none rounded-[0.5rem]',
 						customHeight,
 						'shadow-none',
