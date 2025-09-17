@@ -1,4 +1,4 @@
-import { NavBar } from "@/component";
+import { NavBar, Sidebar } from "@/component";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "./globals.css";
@@ -47,8 +47,15 @@ export default function RootLayout({
       <body className="antialiased light" data-theme="light">
         <Providers>
           <div className="h-screen w-screen">
-            <NavBar />
-            <div className="h-[90vh]">{children}</div>
+            <div className="h-[10vh] w-full">
+              <NavBar />
+            </div>
+            <div className="h-[90vh] w-full flex overflow-hidden">
+              <div className="h-full w-1/6">
+                <Sidebar />
+              </div>
+              <div className="h-full w-5/6 p-6 overflow-y-scroll scrollbar-hide">{children}</div>
+            </div>
           </div>
         </Providers>
       </body>
