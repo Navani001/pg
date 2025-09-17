@@ -1,8 +1,8 @@
+import { NavBar } from "@/component";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { Poppins } from "next/font/google";
-import { Providers } from "./provider";
+import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "./globals.css";
+import { Providers } from "./provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,7 +18,7 @@ const poppins = Poppins({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-poppins",
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900']
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -35,15 +35,21 @@ export default function RootLayout({
     <html
       lang="en"
       data-theme="light"
-      style={{ colorScheme: 'light' }}
+      style={{ colorScheme: "light" }}
       className={`light ${poppins.variable} ${geistSans.variable} ${geistMono.variable}`}
     >
       <head>
-        <link href="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.css" rel="stylesheet" />
+        <link
+          href="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.css"
+          rel="stylesheet"
+        />
       </head>
       <body className="antialiased light" data-theme="light">
         <Providers>
-          {children}
+          <div className="h-screen w-screen">
+            <NavBar />
+            <div className="h-[90vh]">{children}</div>
+          </div>
         </Providers>
       </body>
     </html>
