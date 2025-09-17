@@ -24,9 +24,9 @@ export function DetailProof(props:DetailProofProps) {
         }
     })();
     return (
-        <div className="h-full w-full  p-3">
-            <div className="font-semibold">{header}</div>
-            <div className="flex shadow-lg  justify-between p-3 rounded-lg">
+        <div className=" w-full  ">
+            <div className="font-semibold mb-1">{header}</div>
+            <div className="flex border  justify-between p-3 rounded-lg">
                 <div className="flex flex-col gap-1">
                     <span className="font-semibold text-md"> {month}</span>
                     <span className=" text-sm">Status        {label.text!='' && <Chip label={label.text} className={label.className} />}

@@ -7,6 +7,7 @@ interface MonthCardProps {
     month?: string;
     status?: string;
     selected?:boolean
+    onClick?:()=>void
 
 }
 interface LabelType{
@@ -18,7 +19,8 @@ props:MonthCardProps) => {
     const {
         month,
         status,
-        selected
+        selected,
+        onClick
     } = props
     const label:LabelType = (() => {
         switch(status){
@@ -30,38 +32,9 @@ props:MonthCardProps) => {
                 return {className:"",text:""};
         }
     })();
-     const monthShort = (() => {
-        switch(month?.toLowerCase()){
-            case "january": 
-                return "Jan";
-            case "february": 
-                return "Feb";
-            case "march": 
-                return "Mar";
-            case "april": 
-                return "Apr";
-            case "may": 
-                return "May";
-            case "june": 
-                return "Jun";
-            case "july": 
-                return "Jul";
-            case "august": 
-                return "Aug";
-            case "september": 
-                return "Sep";
-            case "october": 
-                return "Oct";
-            case "november": 
-                return "Nov";
-            case "december": 
-                return "Dec";
-            default: 
-                return month || "";
-        }
-    })();
+    
 	return (
-		<div className={cn('border  p-2 max-w-[308px] flex justify-center items-center rounded-lg',{ "bg-primary-50": selected })}>
+		<div onClick={onClick}  className={cn('border  p-2 max-w-[308px] flex justify-center items-center rounded-lg',{ "bg-primary-50": selected })}>
         <div className='flex flex-col  w-full '>
          <div className={cn('font-semibold text-md ',{"text-white": selected})}>{month}</div>
          <div className={cn('',{"text-white": selected})}>Paid on Jan 05</div>
