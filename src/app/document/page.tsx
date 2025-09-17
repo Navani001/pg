@@ -52,7 +52,7 @@ export default function Page() {
   };
 
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full overflow-y-scroll scrollbar-hide">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">
           Upload Your Documents
