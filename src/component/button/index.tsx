@@ -83,16 +83,7 @@ export const ButtonComponent = ({
 			{...rest}
 		>
 			{/* Render icon if isIcon is true */}
-			{isIcon && (
-				<div
-					className={cn(
-						'flex items-center justify-center',
-						iconClassName, // Allow custom icon styling
-					)}
-				>
-					{buttonIcon}
-				</div>
-			)}
+			
 			{/* Button text with customizable styling */}
 			<p
 				className={cn(
@@ -102,6 +93,16 @@ export const ButtonComponent = ({
 			>
 				{buttonText}
 			</p>
+            {isIcon && (
+                <div
+                    className={cn(
+                        'flex items-center justify-center',
+                        iconClassName, // Allow custom icon styling
+                    )}
+                >
+                    {buttonIcon}
+                </div>
+            )}
 		</Button>
 	);
 };

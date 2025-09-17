@@ -2,7 +2,7 @@
 import { Image } from "@heroui/react";
 import React, { useState } from "react";
 
-export const    NavBar = () => {
+export const NavBar = () => {
   
 
   return (

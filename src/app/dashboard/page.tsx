@@ -60,7 +60,7 @@ export default function page() {
         <Sidebar />
       </div>
       <div className="h-full w-5/6 overflow-y-scroll p-6 scrollbar-hide">
-        {/* Header */}
+        {/* Header */}  
         <h1 className="text-2xl mb-5 font-bold text-gray-900">
           Current Month Details
         </h1>

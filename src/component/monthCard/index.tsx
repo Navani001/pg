@@ -61,7 +61,7 @@ props:MonthCardProps) => {
         }
     })();
 	return (
-		<div className={cn('border border-primary-50 p-2 max-w-[308px] flex justify-center items-center rounded-lg',{ "bg-primary-50": selected })}>
+		<div className={cn('border  p-2 max-w-[308px] flex justify-center items-center rounded-lg',{ "bg-primary-50": selected })}>
         <div className='flex flex-col  w-full '>
          <div className={cn('font-semibold text-md ',{"text-white": selected})}>{month}</div>
          <div className={cn('',{"text-white": selected})}>Paid on Jan 05</div>

@@ -14,8 +14,11 @@ export const Sidebar = () => {
   const links = [
     { name: "Overview", href: "/dashboard", icon: GoGraph },
     { name: "Document", href: "/document", icon: IoDocumentText },
+    { name: "Proof", href: "/proof", icon: BsFillQuestionCircleFill },
+
     { name: "Profile Details", href: "/profile", icon: FaUserCircle },
     { name: "Request form", href: "/request", icon: BsFillQuestionCircleFill },
+    
   ];
 
   return (
