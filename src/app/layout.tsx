@@ -50,11 +50,13 @@ export default function RootLayout({
             <div className="h-[10vh] w-full">
               <NavBar />
             </div>
-            <div className="h-[90vh] w-full flex overflow-hidden">
+            <div className="h-[90vh] w-full flex">
               <div className="h-full w-1/6">
                 <Sidebar />
               </div>
-              <div className="h-full w-5/6 p-6 overflow-y-scroll scrollbar-hide">{children}</div>
+              <div className="h-full w-5/6 p-6 overflow-y-scroll scrollbar-hide">
+                {children}
+              </div>
             </div>
           </div>
         </Providers>

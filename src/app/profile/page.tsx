@@ -1,247 +1,241 @@
 "use client";
-import { Sidebar } from '@/component'
-import React, { useState } from 'react'
+import { Button, DatePicker, Input, Select, SelectItem } from "@heroui/react";
+import { useState } from "react";
+import { RiFolderUserFill } from "react-icons/ri";
 
 export default function PGBookingPage() {
   const [formData, setFormData] = useState({
-    fullName: '',
-    dateOfBirth: '',
-    gender: 'Male',
-    workType: 'Student',
-    phoneNumber: '+91 9323464442',
-    alternatePhone: '+91 9449543341',
-    emailAddress: 'king@example.com',
-    address: 'Street, City, State, PIN'
-  })
+    fullName: "",
+    dateOfBirth: "",
+    gender: "Male",
+    workType: "Student",
+    phoneNumber: "+91 9323464442",
+    alternatePhone: "+91 9449543341",
+    emailAddress: "king@example.com",
+    address: "Street, City, State, PIN",
+  });
 
   const handleInputChange = (e: { target: { name: any; value: any } }) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
+    const { name, value } = e.target;
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
   const handleUpdateDetails = () => {
-    console.log('Updating personal details:', formData)
-    // Handle form submission logic here
-  }
+    console.log("Updating personal details:", formData);
+  };
 
   return (
-    <div className="min-h-screen w-full overflow-y-scroll scrollbar-hide">      
-      <div className="p-6">
-        <div className="max-w-2xl mx-auto">
-          {/* Personal Details Section */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Personal Details</h2>
-            </div>
-            
-            {/* PG Details */}
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-base font-medium text-gray-900 mb-4">PG Details</h3>
-              <div className="text-sm text-gray-600 mb-4">Assigned by admin. These details are post-only</div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">PG Name</label>
-                  <input
-                    type="text"
-                    value="MRM PG"
-                    readOnly
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Room Number</label>
-                  <input
-                    type="text"
-                    value="413-A"
-                    readOnly
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                  <input
-                    type="text"
-                    value="Chennai"
-                    readOnly
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Bed Type</label>
-                  <input
-                    type="text"
-                    value="2-Sharing"
-                    readOnly
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Move-in date</label>
-                  <input
-                    type="text"
-                    value="August 10, 2025"
-                    readOnly
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Monthly rent</label>
-                  <input
-                    type="text"
-                    value="₹8,500"
-                    readOnly
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
-                  />
-                </div>
-              </div>
-            </div>
+    <div className="h-full w-full overflow-y-scroll scrollbar-hide">
+      {/* Personal Details Section */}
+      <div className="bg-white rounded-lg shadow-md border border-gray-200 mb-6">
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Personal Details
+          </h2>
+        </div>
+
+        {/* PG Details */}
+        <div className="px-6 py-4 border-b border-gray-200">
+          <div className="flex w-full justify-between items-center">
+            <h3 className="text-base font-medium text-gray-900 mb-4">
+              PG Details
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Assigned by admin. These details are read-only
+            </p>
           </div>
 
-          {/* Basic Information Section */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-base font-medium text-gray-900">Basic Information</h3>
-            </div>
-            
-            <div className="px-6 py-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                  <input
-                    type="text"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleInputChange}
-                    placeholder="King"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
-                  <input
-                    type="text"
-                    name="dateOfBirth"
-                    value={formData.dateOfBirth}
-                    onChange={handleInputChange}
-                    placeholder="dd/mm/yyyy"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
-                  <select
-                    name="gender"
-                    value={formData.gender}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Work Type</label>
-                  <select
-                    name="workType"
-                    value={formData.workType}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="Student">Student</option>
-                    <option value="Professional">Professional</option>
-                    <option value="Freelancer">Freelancer</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div className="mt-4">
-                <p className="text-sm text-gray-600">
-                  Work Type helps us understand your occupation (e.g., for routine rules or ID verification).
-                </p>
-              </div>
-            </div>
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              isReadOnly
+              label="PG Name"
+              labelPlacement="outside"
+              defaultValue="MRM PG"
+              variant="bordered"
+              className="w-full"
+            />
 
-          {/* Contact Information Section */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-base font-medium text-gray-900">Basic Information</h3>
-            </div>
-            
-            <div className="px-6 py-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                  <input
-                    type="tel"
-                    name="phoneNumber"
-                    value={formData.phoneNumber}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Alternate Phone Number</label>
-                  <input
-                    type="tel"
-                    name="alternatePhone"
-                    value={formData.alternatePhone}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                  <input
-                    type="email"
-                    name="emailAddress"
-                    value={formData.emailAddress}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
-                  <input
-                    type="text"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+            <Input
+              isReadOnly
+              label="Room Number"
+              labelPlacement="outside"
+              defaultValue="413-A"
+              variant="bordered"
+              className="w-full"
+            />
 
-          {/* Update Button */}
-          <div className="flex justify-end">
-            <button
-              onClick={handleUpdateDetails}
-              className="px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-200"
-            >
-              Update Personal Details
-            </button>
+            <Input
+              isReadOnly
+              labelPlacement="outside"
+              label="Location"
+              defaultValue="Chennai"
+              variant="bordered"
+              className="w-full"
+            />
+
+            <Input
+              isReadOnly
+              labelPlacement="outside"
+              label="Bed Type"
+              defaultValue="2-Sharing"
+              variant="bordered"
+              className="w-full"
+            />
+
+            <Input
+              isReadOnly
+              labelPlacement="outside"
+              label="Move-in date"
+              defaultValue="August 10, 2025"
+              variant="bordered"
+              className="w-full"
+            />
+
+            <Input
+              isReadOnly
+              label="Monthly rent"
+              labelPlacement="outside"
+              defaultValue="₹8,500"
+              variant="bordered"
+              className="w-full"
+            />
           </div>
         </div>
       </div>
+
+      {/* Basic Information Section */}
+      <div className="bg-white rounded-lg border border-gray-200 mb-6 shadow-md">
+        <h3 className="text-base font-medium text-gray-900 border-b p-6">
+          Basic Information
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 p-6">
+          {/* Full Name */}
+          <Input
+            variant="bordered"
+            label="Full Name"
+            labelPlacement="outside"
+            placeholder="King"
+          />
+
+          {/* Date of Birth */}
+          <DatePicker
+            label="Date of Birth"
+            variant="bordered"
+            labelPlacement="outside"
+          />
+
+          {/* Gender */}
+          <div>
+            <Select
+              label="Gender"
+              variant="bordered"
+              labelPlacement="outside"
+              placeholder="Select gender"
+              value={formData.gender}
+            >
+              <SelectItem key="Male">Male</SelectItem>
+              <SelectItem key="Female">Female</SelectItem>
+              <SelectItem key="Other">Other</SelectItem>
+            </Select>
+          </div>
+
+          {/* Work Type */}
+          <div>
+            <Select
+              label="Work Type"
+              labelPlacement="outside"
+              variant="bordered"
+              placeholder="Select work type"
+              value={formData.workType}
+            >
+              <SelectItem key="Student">Student</SelectItem>
+              <SelectItem key="Professional">Professional</SelectItem>
+              <SelectItem key="Freelancer">Freelancer</SelectItem>
+              <SelectItem key="Other">Other</SelectItem>
+            </Select>
+            <p className="text-sm text-gray-600 mt-4">
+              Work Type helps us understand your occupation (e.g., for routine
+              rules or ID verification).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Contact Information Section */}
+      <div className="bg-white rounded-lg shadow-md border border-gray-200 mb-6">
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h3 className="text-base font-medium text-gray-900">
+            Contact Information
+          </h3>
+        </div>
+
+        <div className="px-6 py-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Phone Number */}
+            <Input
+              type="tel"
+              name="phoneNumber"
+              labelPlacement="outside"
+              label="Phone Number"
+              value={formData.phoneNumber}
+              onChange={handleInputChange}
+              variant="bordered"
+              className="w-full"
+            />
+
+            {/* Alternate Phone */}
+            <Input
+              type="tel"
+              labelPlacement="outside"
+              name="alternatePhone"
+              label="Alternate Phone Number"
+              value={formData.alternatePhone}
+              onChange={handleInputChange}
+              variant="bordered"
+              className="w-full"
+            />
+
+            {/* Email Address */}
+            <Input
+              type="email"
+              labelPlacement="outside"
+              name="emailAddress"
+              label="Email Address"
+              value={formData.emailAddress}
+              onChange={handleInputChange}
+              variant="bordered"
+              className="w-full"
+            />
+
+            {/* Address */}
+            <Input
+              type="text"
+              name="address"
+              labelPlacement="outside"
+              label="Address"
+              value={formData.address}
+              onChange={handleInputChange}
+              variant="bordered"
+              className="w-full"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Update Button */}
+      <div className="flex justify-end">
+        <Button
+          onPress={handleUpdateDetails}
+          className="px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+        >
+          <RiFolderUserFill />
+          Update Personal Details
+        </Button>
+      </div>
     </div>
-  )
+  );
 }
