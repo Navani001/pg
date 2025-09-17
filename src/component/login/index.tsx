@@ -26,7 +26,7 @@ export const Login = () => {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto h-auto lg:h-[85vh] rounded-2xl border border-white/40 flex flex-col md:flex-row justify-center items-center backdrop-blur-md shadow-lg p-4 sm:p-6 font-medium">
+    <div className="w-[80%]  mx-auto h-auto lg:h-[85vh] rounded-2xl border border-white/40 flex flex-col md:flex-row justify-center items-center backdrop-blur-md shadow-lg p-4 sm:p-6 font-medium">
       {/* Left Image Section */}
       <div className="hidden h-full lg:h-[85%] w-full md:flex md:w-1/2 lg:w-2/5 items-center justify-center">
         <div className="w-full h-full sm:h-[400px] lg:h-full bg-[url('/loginImage.jpg')] bg-cover bg-center rounded-2xl shadow-md" />
