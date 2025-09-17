@@ -54,7 +54,7 @@ const bills = [
 
 export default function page() {
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full overflow-y-scroll scrollbar-hide">
       {/* Header */}
       <h1 className="text-2xl mb-5 font-bold text-gray-900">
         Current Month Details
@@ -75,7 +75,7 @@ export default function page() {
       </div>
 
       {/* Current Month Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {bills.map((bill, idx) => (
           <BillCard
             key={idx}
@@ -89,7 +89,7 @@ export default function page() {
       </div>
 
       {/* Payment History */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6">
+      <div className="bg-white border border-gray-200 rounded-lg p-6 mt-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">
           Room rent & Electricity payment History
         </h2>

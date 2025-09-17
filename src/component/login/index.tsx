@@ -1,10 +1,13 @@
 "use client";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ButtonComponent } from "../button";
 import { InputField } from "../input";
 
 export const Login = () => {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -69,6 +72,7 @@ export const Login = () => {
               textClassName="text-base font-semibold"
               baseClassName="bg-gradient-to-r from-red-500 to-pink-500 px-8 sm:px-10 py-2 rounded-lg text-white shadow-md hover:opacity-90 transition"
               isIcon={false}
+              handleOnClick={() => router.push("/dashboardLayout/dashboard")}
             />
           </div>
         </div>

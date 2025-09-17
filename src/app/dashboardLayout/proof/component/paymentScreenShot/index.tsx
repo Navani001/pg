@@ -58,7 +58,7 @@ export function PayMentScreenShoot(props: PayMentScreenShootProps) {
                 onPress={() => fileInputRef.current?.click()}
                 className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 w-auto h-auto rounded-lg font-medium transition-colors inline-flex items-center "
             >
-                <FiDownload className="w-4 h-4 font-bold" />
+                <FiDownload className="w-12 h-12 font-bold" />
          
                 <span>Upload Screenshot</span>
             </Button></div>
