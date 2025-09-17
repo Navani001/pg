@@ -19,7 +19,7 @@ export const Sidebar = () => {
   ];
 
   return (
-    <div className="h-[90vh] w-60 bg-white shadow-sm border-r">
+    <div className="h-[90vh] w-full bg-transparent shadow-sm border-r">
       <div className="p-4 font-bold text-gray-400 text-sm tracking-wide">
         DASHBOARD
       </div>
