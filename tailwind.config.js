@@ -202,7 +202,7 @@ module.exports = {
 						primary: {
 							DEFAULT: '#FF7014',
 							foreground: '#FFEFE5',
-							'50': '#F0DFD5',
+							'50': '#4F46E5',
 							'100': '#FF7014',
 							'200': '#AD4400',
 							'400': '#FD6F14',
@@ -223,7 +223,7 @@ module.exports = {
 							'400': '#555E68',
 						},
 						success: {
-							DEFAULT: '#51BC51',
+							DEFAULT: '#16A34A',
 							foreground: '#E3FBE3',
 							'50': '#D5F0D5',
 							'100': '#51BC51',
