@@ -14,7 +14,7 @@ export function Month() {
     ];
     const[selectedMonth, setSelectedMonth]=useState<string | null>(null)
     return (
-        <div className="  flex flex-col w-full overflow-hidden gap-3 ">
+        <div className="  flex flex-col w-full  gap-3 ">
             <div className="">
                 {/* <ButtonComponent iconClassName="ml-1" baseClassName="w-auto h-auto p-3 !rounded-lg " buttonIcon={<SlCalender />} buttonText={`${year}`} /> */}
                 <YearDropDown/>
