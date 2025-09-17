@@ -4,7 +4,7 @@ import { ButtonComponent, MonthCard, Sidebar } from "@/component";
 import { SlCalender } from "react-icons/sl";
 import { DetailProof } from "../details";
 import { useState } from "react";
-import { YearDropDown } from "../yearDrop/Down";
+import { YearDropDown } from "../yearDrop";
 
 export function Month() {
     const year = "2025"
