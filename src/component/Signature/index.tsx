@@ -2,6 +2,10 @@
 import React, { useRef } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import { ButtonComponent } from "../button";
+import { FaUndoAlt } from "react-icons/fa";
+import { IoPencil } from "react-icons/io5";
+import { LucideUndo } from "lucide-react";
+import { MdUndo } from "react-icons/md";
 
 export const SignaturePad: React.FC = () => {
     const sigCanvas = useRef<SignatureCanvas>(null);
@@ -17,37 +21,46 @@ export const SignaturePad: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col space-y-4">
+        <div className=" flex flex-col p-3 border rounded-xl gap-3">
+            <h4 className="font-semibold text-lg">Digital Signature</h4>
+        <div className="flex flex-col  space-y-4">
             <SignatureCanvas
-            
                 ref={sigCanvas}
                 penColor={isDrawing ? "black" : "transparent"}
-                canvasProps={{  className: "border-1 w-full h-full border-gray-400 rounded-lg" }}
+                canvasProps={{
+                    className: "border-1  rounded-lg w-full h-full"
+                }}
             />
 
             <div className="space-x-4">
-                <button onClick={clear} className="px-4 py-2 bg-gray-300 rounded">
-                    Clear
-                </button>
-                  <ButtonComponent handleOnClick={save} isStartIcon isEndIcon={false} isIcon={true} />
-                {/* <button onClick={save} className="px-4 py-2 bg-blue-500 text-white rounded">
-                    Save
-                </button> */}
-                <button onClick={() => {
-                    const data = sigCanvas.current?.toData();
-                    if (data && data.length > 0) {
-                        data.pop(); // remove last stroke
-                        sigCanvas.current?.fromData(data); // redraw remaining
-                    }
-                }} className="px-4 py-2 bg-blue-500 text-white rounded">
-                    Undo
-                </button>
-                <button onClick={() => {
+                <ButtonComponent handleOnClick={clear}
+                    buttonText="Clear"
+                    textClassName="font-normal "
+                        baseClassName="w-auto h-auto p-2  border border-black"
+                    buttonIcon={<FaUndoAlt />} isStartIcon isEndIcon={false} isIcon={true} />
+                <ButtonComponent handleOnClick={() => {
                     setIsDrawing(!isDrawing);
-                }} className="px-4 py-2 bg-blue-500 text-white rounded">
-                    Draw
-                </button>
+                }}
+                    buttonText="Draw"
+                    textClassName="font-normal "
+                        baseClassName="w-auto h-auto p-2 border border-black"
+                    buttonIcon={<IoPencil className="text-md" />} isStartIcon isEndIcon={false} isIcon={true} />
+
+                <ButtonComponent
+                    handleOnClick={() => {
+                        const data = sigCanvas.current?.toData();
+                        if (data && data.length > 0) {
+                            data.pop(); // remove last stroke
+                            sigCanvas.current?.fromData(data); // redraw remaining
+                        }
+                    }}
+                    buttonText="Undo"
+                    textClassName="font-normal "
+                    baseClassName="w-auto h-auto p-2 border border-black"
+                    buttonIcon={<MdUndo />} isStartIcon isEndIcon={false} isIcon={true} />
+
             </div>
+        </div>
         </div>
     );
 };
