@@ -1,10 +1,6 @@
 "use client";
 
 import { NavBar, Sidebar } from "@/component";
-import Document from "./document/page";
-import OverView from "./dashboard/page";
-import Profile from "./profile/page";
-import Request from "./request/page";
 
 export default function AdminLayout({
   children,
@@ -21,7 +17,7 @@ export default function AdminLayout({
           <Sidebar />
         </div>
         <div className="h-full w-full lg:w-5/6 overflow-y-scroll scrollbar-hide">
-          <Request />
+          {children}
         </div>
       </div>
     </div>
