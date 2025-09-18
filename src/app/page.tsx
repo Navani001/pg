@@ -1,14 +1,5 @@
-
-import { redirect } from "next/navigation";
+import Landing from "./landing/page";
 
 export default async function Home() {
-  
-  // Redirect to login if not authenticated
-  // if (!data?.user) {
-  //   redirect("/login");
-  // }
-
-  return (
-   <div>hi</div>
-  );
+  return <Landing />;
 }

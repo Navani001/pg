@@ -12,10 +12,22 @@ export const Sidebar = () => {
   const pathname = usePathname();
 
   const links = [
-    { name: "Overview", href: "/dashboard", icon: GoGraph },
-    { name: "Document", href: "/document", icon: IoDocumentText },
-    { name: "Profile Details", href: "/profile", icon: FaUserCircle },
-    { name: "Request form", href: "/request", icon: BsFillQuestionCircleFill },
+    { name: "Overview", href: "/dashboardLayout/dashboard", icon: GoGraph },
+    {
+      name: "Document",
+      href: "/dashboardLayout/document",
+      icon: IoDocumentText,
+    },
+    {
+      name: "Profile Details",
+      href: "/dashboardLayout/profile",
+      icon: FaUserCircle,
+    },
+    {
+      name: "Request form",
+      href: "/dashboardLayout/request",
+      icon: BsFillQuestionCircleFill,
+    },
   ];
 
   return (
