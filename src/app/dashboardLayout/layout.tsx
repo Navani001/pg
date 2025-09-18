@@ -20,9 +20,11 @@ export default function AdminLayout({
         <div className="h-full w-1/6 hidden lg:flex">
           <Sidebar />
         </div>
-        <div className="h-full w-full lg:w-5/6 overflow-y-scroll scrollbar-hide">
+        {/* <div className="h-full w-full lg:w-5/6 overflow-y-scroll scrollbar-hide">
           <Request />
-        </div>
+        </div> */}{
+          children
+        }
       </div>
     </div>
   );

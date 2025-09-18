@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { BsFillQuestionCircleFill } from "react-icons/bs";
 import { FaUserCircle } from "react-icons/fa";
 import { GoGraph } from "react-icons/go";
+import { IoIosDocument } from "react-icons/io";
 import { IoDocumentText } from "react-icons/io5";
 
 export const Sidebar = () => {
@@ -17,6 +18,11 @@ export const Sidebar = () => {
       name: "Document",
       href: "/dashboardLayout/document",
       icon: IoDocumentText,
+    },
+    {
+      name: "Proof",
+      href: "/dashboardLayout/proof",
+      icon: IoIosDocument,
     },
     {
       name: "Profile Details",

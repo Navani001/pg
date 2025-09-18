@@ -23,6 +23,8 @@ export type ButtonProps = {
     baseClassName?: string;
     /** Flag to determine if the button should display an icon */
     isIcon?: boolean;
+    isStartIcon?: boolean;
+    isEndIcon?:boolean
     /** Custom background color for button */
     bgColor?: string;
     radius?: 'sm' | 'md' | 'lg' | 'full';
@@ -51,11 +53,13 @@ export type ButtonProps = {
  */
 export const ButtonComponent = ({
     id,
+    isEndIcon = true,
     handleOnClick = () => false,
     buttonText = 'Sync from HRMS',
     buttonIcon = <IoSyncCircleOutline />,
     iconClassName = '',
     radius,
+    isStartIcon =false,
     textClassName = '',
     isIcon = true,
     baseClassName = '',
@@ -83,16 +87,16 @@ export const ButtonComponent = ({
 			{...rest}
 		>
 			{/* Render icon if isIcon is true */}
-			{isIcon && (
-				<div
-					className={cn(
-						'flex items-center justify-center',
-						iconClassName, // Allow custom icon styling
-					)}
-				>
-					{buttonIcon}
-				</div>
-			)}
+            {isIcon && isStartIcon && (
+                <div
+                    className={cn(
+                        'flex items-center justify-center',
+                        iconClassName, // Allow custom icon styling
+                    )}
+                >
+                    {buttonIcon}
+                </div>
+            )}
 			{/* Button text with customizable styling */}
 			<p
 				className={cn(
@@ -102,6 +106,16 @@ export const ButtonComponent = ({
 			>
 				{buttonText}
 			</p>
+            {isIcon && isEndIcon && (
+                <div
+                    className={cn(
+                        'flex items-center justify-center',
+                        iconClassName, // Allow custom icon styling
+                    )}
+                >
+                    {buttonIcon}
+                </div>
+            )}
 		</Button>
 	);
 };

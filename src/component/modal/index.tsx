@@ -44,7 +44,7 @@ export const Modals = ({
         modalClassName
       )} // Additional classes (empty by default)
       hideCloseButton={hideCloseButton} // Hiding the close button
-      size={size} // Setting the modal size to "small"
+      size={"5xl"} // Setting the modal size to "small"
       radius="lg" // Applying large border-radius to the modal
       classNames={{
         body: cn("p-4 pb-2", bodyClassName), // Adding padding to the modal body
