@@ -16,7 +16,7 @@ import { IoMdCloudUpload } from "react-icons/io";
 import { IoFolderOutline } from "react-icons/io5";
 import { MdOutlineInfo } from "react-icons/md";
 
-export default function Page() {
+export default function Document() {
   const [uploadedFile, setUploadedFile] = useState<{
     name: string;
     size: string;
@@ -53,7 +53,7 @@ export default function Page() {
   };
 
   return (
-    <div className="h-full w-full overflow-y-scroll scrollbar-hide">
+    <div className="h-full p-4 md:p-6 w-full overflow-y-scroll scrollbar-hide">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">
           Upload Your Documents
@@ -66,7 +66,7 @@ export default function Page() {
       </div>
 
       {/* Document Type Selection */}
-      <div className="shadow-lg p-4 rounded-md">
+      <div className="shadow-lg p-4 rounded-md border border-gray-300">
         <div className="mb-6">
           <label className="flex gap-1 text-sm font-bold text-gray-700 items-center mb-3">
             Select Document Type
@@ -82,9 +82,18 @@ export default function Page() {
             className="w-full"
             variant="bordered"
             placeholder="Select an document"
+            classNames={{
+              listboxWrapper: "border border-gray-300 rounded-lg",
+            }}
           >
-            {documentTypes.map((documentTypes) => (
-              <SelectItem>{documentTypes}</SelectItem>
+            {documentTypes.map((options, index) => (
+              <SelectItem
+                className={`border-b border-gray-200 px-3 py-2 ${
+                  index === documentTypes.length - 1 ? "border-none" : ""
+                }`}
+              >
+                {options}
+              </SelectItem>
             ))}
           </Select>
         </div>
@@ -102,15 +111,15 @@ export default function Page() {
               Drag & drop your document image here or click to browse and upload
             </p>
             <p className="text-gray-900 mb-3">Upload the document image</p>
-            <div className="flex items-center gap-2 w-full justify-center ">
+            <div className="flex items-center gap-1 md:gap-2 w-full justify-center ">
               <Button
                 onPress={() => fileInputRef.current?.click()}
-                className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full font-medium transition-colors inline-flex items-center space-x-2"
+                className="bg-red-500 hover:bg-red-600 text-white rounded-full font-mediuminline-flex items-center"
               >
                 <IoFolderOutline className="w-4 h-4 font-bold" />
                 <span>Browse File</span>
               </Button>
-              <p className="text-sm text-gray-900">
+              <p className="text-xs md:text-sm text-gray-900">
                 JPG, PNG, PDF up to 10MB each
               </p>
             </div>
@@ -177,7 +186,7 @@ export default function Page() {
 
       {/* Success Message */}
       {showSuccess && (
-        <div className="bg-green-500 text-white mt-5 p-4 rounded-lg shadow-lg flex items-center space-x-3 min-w-96">
+        <div className="bg-green-500 text-white mt-5 p-4 rounded-lg shadow-lg flex items-center">
           <Check className="w-5 h-5" />
           <div>
             <p className="font-medium">

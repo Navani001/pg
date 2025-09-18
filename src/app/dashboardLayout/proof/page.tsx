@@ -18,7 +18,7 @@ export default function page() {
     const status: string = "upload"
     const [openModel, setOpenModel] = useState(false);
     return (
-        <div className="h-full w-full flex gap-2 flex-col  ">
+        <div className="h-full w-full flex gap-3 flex-col p-4 md:p-6 ">
             <Modal isOpen={openModel} size={"2xl"} hideCloseButton onClose={() => setOpenModel(false)}>
                 <ModalContent>
                     {(onClose) => (
@@ -38,6 +38,7 @@ export default function page() {
                 Upload Proof
             </h1>
             <Month />
+            <div className="mb-4"></div>
             <DetailProof header="Proof Details" month="August 2025" status="pending" amount="$ 2,430" />
             {status === "pending" &&
                 <div className="flex flex-col">
@@ -83,7 +84,7 @@ export default function page() {
             }
             {
                 status === "upload" &&
-                <div className="grid md:grid-cols-5 justify-between w-full gap-3">
+                <div className="grid md:grid-cols-5 justify-between w-full gap-3 mt-3">
                     <div className="border md:col-span-3 rounded-lg p-2 flex flex-col gap-2">
                         <div className="flex justify-between items-center">
                             <span className="font-semibold">Current Status</span>
