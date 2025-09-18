@@ -15,7 +15,7 @@ import { IoMdCloudUpload } from "react-icons/io";
 import { IoFolderOutline } from "react-icons/io5";
 import { MdOutlineInfo } from "react-icons/md";
 
-export default function Page() {
+export default function Document() {
   const [uploadedFile, setUploadedFile] = useState<{
     name: string;
     size: string;
@@ -52,7 +52,7 @@ export default function Page() {
   };
 
   return (
-    <div className="h-full w-full overflow-y-scroll scrollbar-hide">
+    <div className="h-full p-4 md:p-6 w-full overflow-y-scroll scrollbar-hide">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">
           Upload Your Documents
@@ -181,7 +181,7 @@ export default function Page() {
 
       {/* Success Message */}
       {showSuccess && (
-        <div className="bg-green-500 text-white mt-5 p-4 rounded-lg shadow-lg flex items-center space-x-3 min-w-96">
+        <div className="bg-green-500 text-white mt-5 p-4 rounded-lg shadow-lg flex items-center">
           <Check className="w-5 h-5" />
           <div>
             <p className="font-medium">

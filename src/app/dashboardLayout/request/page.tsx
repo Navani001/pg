@@ -3,7 +3,7 @@ import { Button, DatePicker, Select, SelectItem, Textarea } from "@heroui/react"
 import { Check } from "lucide-react";
 import { useState } from "react";
 
-export default function Page() {
+export default function Request() {
   const [formData, setFormData] = useState({
     leaveDate: "",
     reason: "Job transfer",
@@ -36,7 +36,7 @@ export default function Page() {
   ];
 
   return (
-    <div className="h-full w-full overflow-y-scroll scrollbar-hide">
+    <div className="h-full p-4 md:p-6 w-full overflow-y-scroll scrollbar-hide">
       <h1 className="text-2xl font-bold text-gray-900 mb-2">
         Releave Request Details
       </h1>
