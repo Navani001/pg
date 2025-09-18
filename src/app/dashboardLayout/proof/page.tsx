@@ -1,4 +1,5 @@
-import { ButtonComponent, Sidebar } from "@/component";
+"use client"
+import { ButtonComponent, Modals, Sidebar } from "@/component";
 import { Month } from "./component/Month";
 import { DetailProof } from "./component/details";
 import { NoteProof } from "./component/note";
@@ -6,15 +7,33 @@ import { PayMentScreenShoot } from "./component/paymentScreenShot";
 import { InputField } from "@/component/input";
 import { MdPayment } from "react-icons/md";
 import { PaymentDropDown } from "./component/payment";
-import { IoMdEye } from "react-icons/io";
+import { IoMdCloseCircleOutline, IoMdEye } from "react-icons/io";
 import { Chip } from "@/component/chip";
+import { useState } from "react";
+import { ModelContent } from "./component/modelContent";
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react";
 
 
 export default function page() {
     const status: string = "upload"
+    const [openModel, setOpenModel] = useState(false);
     return (
         <div className="h-full w-full flex gap-2 flex-col  ">
+            <Modal isOpen={openModel} size={"2xl"} hideCloseButton onClose={() => setOpenModel(false)}>
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex justify-between gap-1"> Payment Verification Status
+                                <ButtonComponent isEndIcon={false} handleOnClick={() => setOpenModel(false)} isStartIcon={true} buttonText="Close" baseClassName="w-auto h-auto  rounded-md" buttonIcon={<IoMdCloseCircleOutline />} />
+                            </ModalHeader>
+                            <ModalBody className="pb-5">
+                                <ModelContent />
+                            </ModalBody>
 
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
                 Upload Proof
             </h1>
@@ -68,7 +87,9 @@ export default function page() {
                     <div className="border md:col-span-3 rounded-lg p-2 flex flex-col gap-2">
                         <div className="flex justify-between items-center">
                             <span className="font-semibold">Current Status</span>
-                            <ButtonComponent buttonText="View Status" isEndIcon={false} isStartIcon buttonIcon={<IoMdEye className="" />} baseClassName="w-auto h-auto p-2   " />
+                            <ButtonComponent handleOnClick={()=>{
+                                    setOpenModel(!openModel);
+                            }} buttonText="View Status" isEndIcon={false} isStartIcon buttonIcon={<IoMdEye className="" />} baseClassName="w-auto h-auto p-2   " />
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="text-sm">Your Payment Status</span>
@@ -87,6 +108,8 @@ export default function page() {
                     </div>
                 </div>
             }
+            {/* <Modals size={"lg"} width="1029px" hideCloseButton ModalContents={<ModelContent/>} isopen={openModel} onClose={() => setOpenModel(false)} /> */}
+           
         </div>
     );
 }
