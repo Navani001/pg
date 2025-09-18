@@ -1,6 +1,10 @@
 "use client";
 
 import { NavBar, Sidebar } from "@/component";
+import Document from "./document/page";
+import OverView from "./dashboard/page";
+import Profile from "./profile/page";
+import Request from "./request/page";
 
 export default function AdminLayout({
   children,
@@ -8,16 +12,16 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="h-screen w-screen">
-      <div className="h-[10vh] w-full">
+    <div className="h-[100dvh] w-[100dvw] overflow-hidden">
+      <div className="h-[10%] w-full">
         <NavBar />
       </div>
-      <div className="h-[90vh] w-full flex">
+      <div className="h-[90%] w-full flex">
         <div className="h-full w-1/6 hidden lg:flex">
           <Sidebar />
         </div>
-        <div className="h-full w-full lg:w-5/6 p-4 md:p-6 overflow-y-scroll scrollbar-hide">
-          {children}
+        <div className="h-full w-full lg:w-5/6 overflow-y-scroll scrollbar-hide">
+          <Request />
         </div>
       </div>
     </div>

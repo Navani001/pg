@@ -52,9 +52,9 @@ const bills = [
   },
 ];
 
-export default function page() {
+export default function OverView() {
   return (
-    <div className="h-full w-full overflow-y-scroll scrollbar-hide">
+    <div className="h-full p-4 md:p-6 w-full overflow-y-scroll scrollbar-hide">
       {/* Header */}
       <h1 className="text-2xl mb-5 font-bold text-gray-900">
         Current Month Details

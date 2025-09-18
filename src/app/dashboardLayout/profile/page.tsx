@@ -3,7 +3,7 @@ import { Button, DatePicker, Input, Select, SelectItem } from "@heroui/react";
 import { useState } from "react";
 import { RiFolderUserFill } from "react-icons/ri";
 
-export default function PGBookingPage() {
+export default function Profile() {
   const [formData, setFormData] = useState({
     fullName: "",
     dateOfBirth: "",
@@ -30,7 +30,7 @@ export default function PGBookingPage() {
   };
 
   return (
-    <div className="h-full w-full overflow-y-scroll scrollbar-hide">
+    <div className="h-full p-4 md:p-6 w-full overflow-y-scroll scrollbar-hide">
       {/* Personal Details Section */}
       <h2 className="text-xl font-semibold text-gray-900 mb-4">
         Personal Details

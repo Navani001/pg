@@ -45,7 +45,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased light" data-theme="light">
         <Providers>
-          <div className="h-screen w-screen">{children}</div>
+          <div className="h-[100dvh] w-screen">{children}</div>
         </Providers>
       </body>
     </html>
