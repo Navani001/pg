@@ -65,7 +65,7 @@ export default function Page() {
       </div>
 
       {/* Document Type Selection */}
-      <div className="shadow-lg p-4 rounded-md">
+      <div className="shadow-lg p-4 rounded-md border border-gray-300">
         <div className="mb-6">
           <label className="flex gap-1 text-sm font-bold text-gray-700 items-center mb-3">
             Select Document Type
@@ -81,9 +81,18 @@ export default function Page() {
             className="w-full"
             variant="bordered"
             placeholder="Select an document"
+            classNames={{
+              listboxWrapper: "border border-gray-300 rounded-lg",
+            }}
           >
-            {documentTypes.map((documentTypes) => (
-              <SelectItem>{documentTypes}</SelectItem>
+            {documentTypes.map((options, index) => (
+              <SelectItem
+                className={`border-b border-gray-200 px-3 py-2 ${
+                  index === documentTypes.length - 1 ? "border-none" : ""
+                }`}
+              >
+                {options}
+              </SelectItem>
             ))}
           </Select>
         </div>
@@ -101,15 +110,15 @@ export default function Page() {
               Drag & drop your document image here or click to browse and upload
             </p>
             <p className="text-gray-900 mb-3">Upload the document image</p>
-            <div className="flex items-center gap-2 w-full justify-center ">
+            <div className="flex items-center gap-1 md:gap-2 w-full justify-center ">
               <Button
                 onPress={() => fileInputRef.current?.click()}
-                className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full font-medium transition-colors inline-flex items-center space-x-2"
+                className="bg-red-500 hover:bg-red-600 text-white rounded-full font-mediuminline-flex items-center"
               >
                 <IoFolderOutline className="w-4 h-4 font-bold" />
                 <span>Browse File</span>
               </Button>
-              <p className="text-sm text-gray-900">
+              <p className="text-xs md:text-sm text-gray-900">
                 JPG, PNG, PDF up to 10MB each
               </p>
             </div>
