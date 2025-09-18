@@ -5,6 +5,7 @@ import Document from "./document/page";
 import OverView from "./dashboard/page";
 import Profile from "./profile/page";
 import Request from "./request/page";
+import { LandingNavBar } from "@/component/landingHeader";
 
 export default function AdminLayout({
   children,
@@ -15,6 +16,7 @@ export default function AdminLayout({
     <div className="h-[100dvh] w-[100dvw] overflow-hidden">
       <div className="h-[10%] w-full">
         <NavBar />
+        {/* <LandingNavBar/> */}
       </div>
       <div className="h-[90%] w-full flex">
         <div className="h-full w-1/6 hidden lg:flex">
