@@ -76,7 +76,7 @@ export default function Landing() {
         </div>
 
         {/* Right Image */}
-        <div className="w-full lg:w-1/3 h-fit flex justify-center lg:justify-end relative order-1 lg:order-2">
+        <div className="w-full lg:w-1/3 h-fit flex justify-center lg:justify-end xl:justify-center relative order-1 lg:order-2">
           <div className="absolute -bottom-10 -left-5 lg:-bottom-20 lg:-left-20 z-0">
             <Image alt="Decorative lines" src="/threelines.png" />
           </div>
