@@ -68,9 +68,10 @@ declare global{
 
 export default function OverView() {
   const router = useRouter();
-  const storedToken = localStorage?.getItem("token");
   const [overView,setOverView]=useState<any>(null)
+  const [paymentsData,setPaymentsData]=useState<any>([])
   useEffect(() => {
+    const storedToken = localStorage?.getItem("token");
     getRequest("api/v1/user/current-month-overview",{authorization: `Bearer ${storedToken}`}).then((res:any) => {
       console.log("Overview Response:", res);
       if (res && res.success !== false){
@@ -79,7 +80,18 @@ export default function OverView() {
         redirect('/login')
       }
     });
+    getRequest("api/v1/user/payments/history", { authorization: `Bearer ${storedToken}` }).then((res: any) => {
+      console.log("Overview Response:", res);
+      if (res && res.success !== false) {
+        setPaymentsData(res.data.payments)
+      } else {
+        redirect('/login')
+      }
+    });
   },[])
+  var months = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"];
+
   // console.log("Stored Token:", storedToken);
   return (
     <div className="h-full p-4 md:p-6 w-full overflow-y-scroll scrollbar-hide">
@@ -152,7 +164,50 @@ export default function OverView() {
 
         {/* Data rows */}
         <div className="font-bold divide-y divide-gray-200">
-          {payments.map((payment, idx) => (
+          {/* {payments.map((payment, idx) => (
+            <div
+              key={idx}
+              className="grid grid-cols-1 md:grid-cols-5 gap-2 md:gap-0 items-start md:items-center px-3 py-4 text-sm text-gray-700"
+            >
+       
+              <div className="flex justify-between md:block">
+                <span className="font-semibold text-gray-500 md:hidden">Month:</span>
+                {payment.month}
+              </div>
+
+              <div className="flex justify-between md:block">
+                <span className="font-semibold text-gray-500 md:hidden">Type:</span>
+                <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-md text-xs font-bold">
+                  {payment.type}
+                </span>
+              </div>
+
+              <div className="flex justify-between md:block">
+                <span className="font-semibold text-gray-500 md:hidden">Amount:</span>
+                <span className="font-bold">{payment.amount}</span>
+              </div>
+
+              <div className="flex justify-between md:block">
+                <span className="font-semibold text-gray-500 md:hidden">
+                  Payment Date:
+                </span>
+                {payment.paymentDate}
+              </div>
+
+              <div className="flex justify-between md:block">
+                <span className="font-semibold text-gray-500 md:hidden">Status:</span>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs text-white font-semibold ${payment.status === "Pending"
+                      ? "bg-orange-500"
+                      : "bg-green-500"
+                    }`}
+                >
+                  {payment.status}
+                </span>
+              </div>
+            </div>
+          ))} */}
+          {paymentsData && paymentsData?.map((payment:any, idx:any) => (
             <div
               key={idx}
               className="grid grid-cols-1 md:grid-cols-5 gap-2 md:gap-0 items-start md:items-center px-3 py-4 text-sm text-gray-700"
@@ -160,15 +215,20 @@ export default function OverView() {
               {/* Month */}
               <div className="flex justify-between md:block">
                 <span className="font-semibold text-gray-500 md:hidden">Month:</span>
-                {payment.month}
+                {months[payment.month - 1].slice(0,3)} - {payment.year}
+                {/* "month": 9,
+                "year": 2025, */}
               </div>
 
               {/* Type */}
               <div className="flex justify-between md:block">
                 <span className="font-semibold text-gray-500 md:hidden">Type:</span>
-                <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-md text-xs font-bold">
-                  {payment.type}
-                </span>
+                {payment.paymentMethod  && <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-md text-xs font-bold">
+                {payment.paymentMethod}
+                </span>}
+                {!payment.paymentMethod && <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-md text-xs font-bold">
+ Not Initialed
+                </span>}
               </div>
 
               {/* Amount */}
@@ -182,19 +242,19 @@ export default function OverView() {
                 <span className="font-semibold text-gray-500 md:hidden">
                   Payment Date:
                 </span>
-                {payment.paymentDate}
+                {payment.paidDate}
               </div>
 
               {/* Status */}
               <div className="flex justify-between md:block">
                 <span className="font-semibold text-gray-500 md:hidden">Status:</span>
                 <span
-                  className={`px-3 py-1 rounded-full text-xs text-white font-semibold ${payment.status === "Pending"
-                      ? "bg-orange-500"
-                      : "bg-green-500"
+                  className={`px-3 py-1 rounded-full text-xs text-white font-semibold ${payment.paymentStatus === "PENDING"
+                    ? "bg-orange-500"
+                    : "bg-green-500"
                     }`}
                 >
-                  {payment.status}
+                  {payment.paymentStatus}
                 </span>
               </div>
             </div>
