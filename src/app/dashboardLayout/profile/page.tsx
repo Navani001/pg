@@ -1,11 +1,15 @@
 "use client";
-import { getRequest } from "@/utils";
+import { getRequest, putRequest } from "@/utils";
 import { Button, DatePicker, Input, Select, SelectItem } from "@heroui/react";
 import { redirect } from "next/dist/client/components/navigation";
 import { useEffect, useState } from "react";
 import { RiFolderUserFill } from "react-icons/ri";
 import { CalendarDate, parseDate } from "@internationalized/date";
+declare global{
+  interface localStorage{
 
+  }
+}
 
 export default function Profile() {
   const [formData, setFormData] = useState({
@@ -68,10 +72,10 @@ export default function Profile() {
     });
 
   }, [])
-  const workTypeOptions = ["Student", "Professional", "Freelancer", "Other"];
-
+  
   const handleInputChange = (e: { target: { name: any; value: any } }) => {
     const { name, value } = e.target;
+    console.log("Input Change:", name, value);
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -80,6 +84,15 @@ export default function Profile() {
 
   const handleUpdateDetails = () => {
     console.log("Updating personal details:", formData);
+    const token = localStorage.getItem("token");
+
+    putRequest(`api/v1/user/profile`,{
+      "name": formData.fullName,
+      "dob": formData.dateOfBirth ? formData.dateOfBirth.toString() : null,
+      "phone": formData.phoneNumber,
+      "location": formData.address,
+      "work": formData.workType
+    }, { authorization: `Bearer ${token}` })
   };
 
   return (
@@ -190,14 +203,16 @@ export default function Profile() {
           {/* Full Name */}
           <div className="flex flex-col justify-end">
             <Input
+            name="fullName"
               value={formData.fullName}
               variant="bordered"
-              label="Full Name"
+              label="fullName"
               labelPlacement="outside"
               classNames={{
                 label: "text-base text-gray-900",
                 inputWrapper: "h-[40px]",
               }}
+              onChange={handleInputChange}
               placeholder="King"
             />
           </div>
@@ -205,6 +220,7 @@ export default function Profile() {
           {/* Date of Birth */}
           <div className="flex flex-col justify-end">
             <DatePicker
+            
               label="Date of Birth"
               value={formData.dateOfBirth}
               onChange={(date) => setFormData(prev => ({ ...prev, dateOfBirth: date }))}
@@ -219,7 +235,19 @@ export default function Profile() {
 
           {/* Gender */}
           <div>
-            <Select
+            <Input
+              name="Gender"
+              value={formData.gender}
+              variant="bordered"
+              label="Work Type"
+              labelPlacement="outside"
+              classNames={{
+                label: "text-base text-gray-900",
+                inputWrapper: "h-[40px]",
+              }}
+          
+            />
+            {/* <Select
               label="Gender"
               variant="bordered"
               labelPlacement="outside"
@@ -232,26 +260,40 @@ export default function Profile() {
 
             >
               <SelectItem
-                key="Male"
+                key="MALE"
                 className="border-b border-gray-200 last:border-none px-3 py-2"
               >
                 Male
               </SelectItem>
               <SelectItem
-                key="Female"
+                key="FEMALE"
                 className="border-b border-gray-200 last:border-none px-3 py-2"
               >
                 Female
               </SelectItem>
-              <SelectItem key="Other" className="px-3 py-2">
+              <SelectItem key="OTHER" className="px-3 py-2">
                 Other
               </SelectItem>
-            </Select>
+            </Select> */}
           </div>
 
           {/* Work Type */}
           <div>
-            <Select
+            
+            <Input
+              name="workType"
+              value={formData.workType}
+              variant="bordered"
+              label="Work Type"
+              labelPlacement="outside"
+              classNames={{
+                label: "text-base text-gray-900",
+                inputWrapper: "h-[40px]",
+              }}
+              onChange={handleInputChange}
+              placeholder="IT"
+            />
+            {/* <Select
               label="Work Type"
               labelPlacement="outside"
               variant="bordered"
@@ -271,7 +313,7 @@ export default function Profile() {
                   {option}
                 </SelectItem>
               ))}
-            </Select>
+            </Select> */}
             <p className="text-sm text-gray-600 mt-4">
               Work Type helps us understand your occupation (e.g., for routine
               rules or ID verification).
@@ -298,7 +340,7 @@ export default function Profile() {
               classNames={{
                 label: "text-base text-gray-900",
               }}
-              label="Phone Number"
+              label="phoneNumber"
               value={formData.phoneNumber}
               onChange={handleInputChange}
               variant="bordered"
@@ -343,7 +385,7 @@ export default function Profile() {
               }}
               name="address"
               labelPlacement="outside"
-              label="Address"
+              label="address"
               value={formData.address}
               onChange={handleInputChange}
               variant="bordered"
