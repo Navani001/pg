@@ -1,20 +1,73 @@
 "use client";
+import { getRequest } from "@/utils";
 import { Button, DatePicker, Input, Select, SelectItem } from "@heroui/react";
-import { useState } from "react";
+import { redirect } from "next/dist/client/components/navigation";
+import { useEffect, useState } from "react";
 import { RiFolderUserFill } from "react-icons/ri";
+import { CalendarDate, parseDate } from "@internationalized/date";
+
 
 export default function Profile() {
   const [formData, setFormData] = useState({
     fullName: "",
-    dateOfBirth: "",
+    dateOfBirth: null as CalendarDate | null,
     gender: "Male",
     workType: "Student",
     phoneNumber: "+91 9323464442",
     alternatePhone: "+91 9449543341",
     emailAddress: "king@example.com",
     address: "Street, City, State, PIN",
+    "pgName": "MRM Mens PG - 2",
+    "roomNumber": "108",
+    "pgLocation": "Thambaram",
+    "dateOfJoining": "2025-09-18T14:11:26.711Z",
+    "monthlyRent": 7500,
+    "advanceAmount": 0
+
   });
 
+  // Helper function to convert ISO string to CalendarDate
+  const convertISOToCalendarDate = (isoString: string): CalendarDate | null => {
+    if (!isoString) return null;
+    try {
+      const date = new Date(isoString);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1; // getMonth() returns 0-11
+      const day = date.getDate();
+      return new CalendarDate(year, month, day);
+    } catch (error) {
+      console.error("Error converting date:", error);
+      return null;
+    }
+  };
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    getRequest(`api/v1/user/profile`, { authorization: `Bearer ${token}` }).then((res: any) => {
+      console.log("Overview Response:", res);
+      if (res && res.success !== false) {
+        setFormData((prev) => ({
+          ...prev,
+          fullName: res.data.personalInfo.name || "",
+          dateOfBirth: convertISOToCalendarDate(res.data.personalInfo.dob) || null,
+          gender: res.data.personalInfo.gender || "Male",
+          workType: res.data.personalInfo.workType || "Student",
+          phoneNumber: res.data.contactInfo.phoneNo || "+91 9323464442",
+          alternatePhone: res.data.contactInfo.alternatePhone || "+91 9449543341",
+          emailAddress: res.data.contactInfo.email || "king@example.com",
+          address: res.data.contactInfo.location || "Street, City, State, PIN",
+          "pgName": res.data.pgDetails.pgName || "MRM Mens PG - 2",
+          "roomNumber": res.data.pgDetails.roomNumber || "108",
+          "pgLocation": res.data.pgDetails.pgLocation || "Thambaram",
+          "dateOfJoining": res.data.pgDetails.dateOfJoining || "2025-09-18T14:11:26.711Z",
+          "monthlyRent": res.data.pgDetails.monthlyRent || 7500,
+          "advanceAmount": res.data.pgDetails.advanceAmount || 0
+        }));
+      } else {
+        redirect('/login')
+      }
+    });
+
+  }, [])
   const workTypeOptions = ["Student", "Professional", "Freelancer", "Other"];
 
   const handleInputChange = (e: { target: { name: any; value: any } }) => {
@@ -49,6 +102,7 @@ export default function Profile() {
             <Input
               isReadOnly
               label="PG Name"
+              value={formData.pgName}
               labelPlacement="outside"
               classNames={{
                 label: "text-base text-gray-900",
@@ -60,6 +114,7 @@ export default function Profile() {
 
             <Input
               isReadOnly
+              value={formData.roomNumber}
               label="Room Number"
               labelPlacement="outside"
               defaultValue="413-A"
@@ -72,6 +127,7 @@ export default function Profile() {
 
             <Input
               isReadOnly
+              value={formData.pgLocation}
               labelPlacement="outside"
               label="Location"
               defaultValue="Chennai"
@@ -84,6 +140,7 @@ export default function Profile() {
 
             <Input
               isReadOnly
+              value={new Date(formData.dateOfJoining).toLocaleDateString()}
               labelPlacement="outside"
               label="Bed Type"
               defaultValue="2-Sharing"
@@ -96,6 +153,7 @@ export default function Profile() {
 
             <Input
               isReadOnly
+              value={formData.monthlyRent.toString()}
               labelPlacement="outside"
               label="Move-in date"
               defaultValue="August 10, 2025"
@@ -108,6 +166,7 @@ export default function Profile() {
 
             <Input
               isReadOnly
+              value={`₹${formData.monthlyRent}`}
               label="Monthly rent"
               labelPlacement="outside"
               defaultValue="₹8,500"
@@ -131,6 +190,7 @@ export default function Profile() {
           {/* Full Name */}
           <div className="flex flex-col justify-end">
             <Input
+              value={formData.fullName}
               variant="bordered"
               label="Full Name"
               labelPlacement="outside"
@@ -146,6 +206,8 @@ export default function Profile() {
           <div className="flex flex-col justify-end">
             <DatePicker
               label="Date of Birth"
+              value={formData.dateOfBirth}
+              onChange={(date) => setFormData(prev => ({ ...prev, dateOfBirth: date }))}
               classNames={{
                 label: "text-base text-gray-900",
                 inputWrapper: "h-[40px]",
@@ -167,6 +229,7 @@ export default function Profile() {
                 listboxWrapper: "border border-gray-300 rounded-lg",
               }}
               value={formData.gender}
+
             >
               <SelectItem
                 key="Male"
@@ -202,9 +265,8 @@ export default function Profile() {
               {workTypeOptions.map((option, index) => (
                 <SelectItem
                   key={option}
-                  className={`border-b border-gray-200 px-3 py-2 ${
-                    index === workTypeOptions.length - 1 ? "border-none" : ""
-                  }`}
+                  className={`border-b border-gray-200 px-3 py-2 ${index === workTypeOptions.length - 1 ? "border-none" : ""
+                    }`}
                 >
                   {option}
                 </SelectItem>

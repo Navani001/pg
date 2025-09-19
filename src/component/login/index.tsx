@@ -1,31 +1,37 @@
 "use client";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ButtonComponent } from "../button";
 import { InputField } from "../input";
+import { getRequest, postRequest } from "@/utils";
 
 export const Login = () => {
   const router = useRouter();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     setIsLoading(true);
-    const response = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    postRequest("api/v1/user/login", { email, password })
+      .then((res: any) => {
+        console.log("Login Response:", res);
+        setIsLoading(false);
 
-    if (response?.error) {
-      console.error("Login failed:", response.error);
-      setIsLoading(false);
-    } else {
-      window.location.href = "/dashboard";
-    }
+        // Check if login was successful - adjust this condition based on your API response structure
+        if (res && res.success !== false) {
+          // Redirect to dashboard on success
+          localStorage.setItem("token", res.data.token);
+          router.push("/dashboardLayout/dashboard");
+        } else {
+          console.error("Login failed:", res?.message || res?.error || "Unknown error");
+        }
+      })
+      .catch((error) => {
+        console.error("Login request failed:", error);
+        setIsLoading(false);
+        // Handle network errors or other failures
+      });
   };
 
   return (
@@ -48,8 +54,9 @@ export const Login = () => {
               <label className="text-sm font-semibold">Username</label>
               <InputField
                 value={email}
+                inputOnChange={(e) => setEmail(e.target.value)}
                 inputWrapperClassName="h-[3rem]"
-                mainWrapperClassName="bg-white rounded-md"
+                mainWrapperClassName=" rounded-md !bg-transparent"
               />
             </div>
 
@@ -58,9 +65,10 @@ export const Login = () => {
               <label className="text-sm font-semibold">Password</label>
               <InputField
                 type="password"
+                inputOnChange={(e) => setPassword(e.target.value)}
                 value={password}
                 inputWrapperClassName="h-[3rem]"
-                mainWrapperClassName="bg-white rounded-md"
+                mainWrapperClassName=" rounded-md !bg-transparent"
               />
             </div>
           </div>
@@ -72,7 +80,11 @@ export const Login = () => {
               textClassName="text-base font-semibold"
               baseClassName="bg-gradient-to-r from-red-500 to-pink-500 px-8 sm:px-10 py-2 rounded-lg text-white shadow-md hover:opacity-90 transition"
               isIcon={false}
-              handleOnClick={() => router.push("/dashboardLayout/dashboard")}
+              handleOnClick={() => {
+                handleLogin();
+              }
+                // router.push("/dashboardLayout/dashboard")
+              }
             />
           </div>
         </div>

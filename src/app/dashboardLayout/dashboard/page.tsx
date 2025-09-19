@@ -1,10 +1,16 @@
 "use client"
 import BillCard from "@/component/billCard";
+import { getRequest } from "@/utils";
 import { Button, Input } from "@heroui/react";
 import { Search } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { TbCalendarDot } from "react-icons/tb";
+declare global {
+  interface localStorage{
 
+  }
+}
 type Payment = {
   month: string;
   type: string;
@@ -54,9 +60,27 @@ const bills = [
   },
 ];
 
+declare global{
+  interface LocalStorage {
+
+  }
+}
+
 export default function OverView() {
   const router = useRouter();
-
+  const storedToken = localStorage?.getItem("token");
+  const [overView,setOverView]=useState<any>(null)
+  useEffect(() => {
+    getRequest("api/v1/user/current-month-overview",{authorization: `Bearer ${storedToken}`}).then((res:any) => {
+      console.log("Overview Response:", res);
+      if (res && res.success !== false){
+        setOverView(res.data)
+      }else{
+        redirect('/login')
+      }
+    });
+  },[])
+  // console.log("Stored Token:", storedToken);
   return (
     <div className="h-full p-4 md:p-6 w-full overflow-y-scroll scrollbar-hide">
       {/* Header */}
@@ -82,7 +106,7 @@ export default function OverView() {
 
       {/* Current Month Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {bills.map((bill, idx) => (
+        {/* {bills.map((bill, idx) => (
           <BillCard
             key={idx}
             title={bill.title}
@@ -91,7 +115,24 @@ export default function OverView() {
             status={bill.status}
             details={bill.details}
           />
-        ))}
+        ))} */}
+        <BillCard
+          key={0}
+          title={bills[0].title}
+          amount={overView?.billing?.rentAmount}
+          dueDate={`$${overView?.currentMonth?.month} ${overView?.currentMonth?.monthName.slice(0,3)} ${overView?.currentMonth?.year}`}
+          status={overView?.paymentInfo?.paymentStatus}
+          details={bills[0].details}
+        />
+        <BillCard
+          key={1}
+          title={bills[1].title}
+          amount={overView?.billing?.electricityBillAmount}
+          // dueDate={bills[1].dueDate}
+          dueDate={`$${overView?.currentMonth?.month} ${overView?.currentMonth?.monthName.slice(0, 3)} ${overView?.currentMonth?.year}`}
+          status={overView?.paymentInfo?.paymentStatus}
+          details={bills[1].details}
+        />
       </div>
 
       {/* Payment History */}
