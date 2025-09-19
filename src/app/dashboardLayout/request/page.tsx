@@ -1,11 +1,12 @@
 "use client";
-import { Button, DatePicker, Select, SelectItem, Textarea } from "@heroui/react";
+import { Button, DatePicker, form, Input, Select, SelectItem, Textarea } from "@heroui/react";
+import { CalendarDate } from "@internationalized/date";
 import { Check } from "lucide-react";
 import { useState } from "react";
-
+import { formatCalendarDateToISO, convertISOToCalendarDate, postRequest } from "@/utils";
 export default function Request() {
   const [formData, setFormData] = useState({
-    leaveDate: "",
+    leaveDate: null as CalendarDate | null,
     reason: "Job transfer",
     feedback: "",
     confirmTerms: false,
@@ -14,6 +15,7 @@ export default function Request() {
 
   const handleInputChange = (e: any) => {
     const { name, value, type, checked } = e.target;
+    console.log(name, value, type, checked);
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
@@ -21,19 +23,36 @@ export default function Request() {
   };
 
   const handleSubmit = () => {
+    const formattedDate = formatCalendarDateToISO(formData.leaveDate);
+   
+    const token = localStorage.getItem("token");
     if (formData.confirmTerms && formData.leaveDate) {
       setIsSubmitted(true);
+      console.log({
+        feedback: formData.feedback,
+        reason: formData.reason,
+        requestedLeaveDate: formattedDate, // This will be in YYYY-MM-DD format
+      })
+      postRequest(`api/v1/user/leaving-requests/apply`, {
+        feedback: formData.feedback,
+        reason: formData.reason,
+        requestedLeaveDate: formattedDate, // This will be in YYYY-MM-DD format
+      }, { authorization: `Bearer ${token}` }).then((res) => {
+        console.log("Leave request response:", res);
+      }).catch((err) => {
+        console.error("Error submitting leave request:", err);
+      });
     }
   };
 
-  const reasonOptions = [
-    "Job transfer",
-    "Personal reasons",
-    "Family emergency",
-    "Health issues",
-    "Education",
-    "Other",
-  ];
+  // const reasonOptions = [
+  //   "Job transfer",
+  //   "Personal reasons",
+  //   "Family emergency",
+  //   "Health issues",
+  //   "Education",
+  //   "Other",
+  // ];
 
   return (
     <div className="h-full p-4 md:p-6 w-full overflow-y-scroll scrollbar-hide">
@@ -75,6 +94,11 @@ export default function Request() {
             <DatePicker
               label="Planned Leave Date"
               variant="bordered"
+              value={formData.leaveDate}
+              onChange={(date) => {
+                console.log(date);
+                setFormData((prev) => ({ ...prev, leaveDate: date }));
+              }}
               labelPlacement="outside"
               classNames={{
                 label: "text-base text-gray-900",
@@ -82,7 +106,7 @@ export default function Request() {
             />
 
             {/* Reason for leaving */}
-            <Select
+            {/* <Select
               label="Reason for leaving"
               variant="bordered"
               labelPlacement="outside"
@@ -104,7 +128,22 @@ export default function Request() {
                   {option}
                 </SelectItem>
               ))}
-            </Select>
+            </Select> */}
+            <Input
+              label="Reason for leaving"
+              name="reason"
+              value={formData.reason}
+              onChange={handleInputChange}
+              labelPlacement="outside"
+              classNames={{
+                label: "text-base text-gray-900",
+                base: "!pt-1"
+              }}
+
+              defaultValue="MRM PG"
+              variant="bordered"
+              className="w-full"
+            />
           </div>
 
           {/* Feedback */}
@@ -112,6 +151,9 @@ export default function Request() {
             variant="bordered"
             label="Feedback (Optional)"
             labelPlacement="outside"
+            name="feedback"
+            value={formData.feedback}
+            onChange={handleInputChange}
             placeholder="Please share your feedback about your stay..."
             classNames={{
               label: "text-base text-gray-900",
@@ -131,11 +173,10 @@ export default function Request() {
                 className="sr-only"
               />
               <div
-                className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
-                  formData.confirmTerms
-                    ? "bg-blue-500 border-blue-500"
-                    : "border-gray-300 bg-white"
-                }`}
+                className={`w-5 h-5 rounded border-2 flex items-center justify-center ${formData.confirmTerms
+                  ? "bg-blue-500 border-blue-500"
+                  : "border-gray-300 bg-white"
+                  }`}
               >
                 {formData.confirmTerms && (
                   <Check className="w-3 h-3 text-white" />

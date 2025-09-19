@@ -31,7 +31,7 @@ export default function Profile() {
   });
 
   // Helper function to convert ISO string to CalendarDate
-  const convertISOToCalendarDate = (isoString: string): CalendarDate | null => {
+ const convertISOToCalendarDate = (isoString: string): CalendarDate | null => {
     if (!isoString) return null;
     try {
       const date = new Date(isoString);
