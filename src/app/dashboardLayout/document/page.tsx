@@ -1,5 +1,6 @@
 "use client";
 
+import { SignaturePad } from "@/component";
 import TermsAndConditions from "@/component/terms&conditions";
 import {
   Button,
@@ -167,6 +168,10 @@ export default function Document() {
       >
         Terms & Conditions
       </Button>
+      <div className="mt-4">
+        <SignaturePad />
+      </div>
+      
       <div className="border p-6 w-full rounded-md mt-4">
         <p className="text-gray-900 font-semibold mb-6">
           By submitting my digital signature, I confirm that I have read and
