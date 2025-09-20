@@ -5,7 +5,6 @@ console.log(process.env.NEXT_PUBLIC_BASE_URL )
 const axiosClient = axios.create({
     baseURL:  "http://localhost:5000/",// Replace with your API URL
     headers: {
-        // "Content-Type": "application/json",
         // Authorization: `Bearer ${auth()?.token || ""}`, // Use auth token if available
     },
 });

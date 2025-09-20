@@ -24,6 +24,7 @@ export default function page() {
     const status: string = "pending"
     const [openModel, setOpenModel] = useState(false);
     const [monthData, setMonthData] = useState<any>([])
+    const [selectedIndex, setSelectedIndex] = useState<number>(0)
     const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
     const [uploadedElectFile, setUploadedElectFile] = useState<UploadedFile | null>(null);
     const [amount, setAmount] = useState<string>()
@@ -33,7 +34,10 @@ export default function page() {
     console.log("Current Month:", currentMonth);
     useEffect(() => {
         const token = localStorage.getItem("token");
-        getRequest(`api/v1/user/payments/year/${year}`, { authorization: `Bearer ${token}` }).then((res: any) => {
+        getRequest(`api/v1/user/payments/year/${year}`, { authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+
+        }).then((res: any) => {
             console.log("Overview Response:", res);
             if (res && res.success !== false) {
                 setMonthData(res.data)
@@ -58,6 +62,8 @@ export default function page() {
         formData.append("amount", amount);
         formData.append("month", selectedMonth.toString());
         formData.append("year", year);
+        formData.append("paymentMethod", "ONLINE");
+
 
         // Add files to FormData if they exist
         if (uploadedFile?.file) {
@@ -110,7 +116,7 @@ export default function page() {
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
                 Upload Proof
             </h1>
-            <Month monthData={monthData} setMonthData={setMonthData} year={year} setYear={setYear} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
+            <Month monthData={monthData} setMonthData={setMonthData} year={year} setYear={setYear} selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
             <div className="mb-4"></div>
             <DetailProof header="Proof Details" month="August 2025" status="pending" amount="$ 2,430" />
             {status === "pending" &&
@@ -127,7 +133,7 @@ export default function page() {
                     </div>
                     <div className="mt-2">
 
-                        <ButtonComponent isEndIcon={false} isStartIcon={true} buttonText="Payment Type" baseClassName="w-auto h-auto p-3 bg-primary-50 text-white rounded-xl" buttonIcon={<MdPayment />} />
+                        <ButtonComponent isEndIcon={false} disabled bgColor="bg-primary-50"  isStartIcon={true} buttonText="Payment Type" baseClassName="w-auto h-auto p-3 bg-primary-50 text-white rounded-xl" buttonIcon={<MdPayment />} />
                     </div>
 
                 </div>

@@ -37,6 +37,7 @@ export type ButtonProps = {
     | 'shadow'
     | 'ghost';
     type?: 'button' | 'submit' | 'reset';
+    disabled?: boolean;
 };
 /**
  * A reusable button component that supports icons and custom styling
@@ -65,6 +66,7 @@ export const ButtonComponent = ({
     baseClassName = '',
     bgColor,
     ButtonVariant = 'light',
+    disabled = false,
     type,
     ...rest
 }: ButtonProps) => {
@@ -78,6 +80,7 @@ export const ButtonComponent = ({
 					: 'bg-background hover:!bg-background data-[hover=true]:!bg-background', // Allow custom background color
 				baseClassName, // Allow custom class overrides
 			)}
+            disabled={disabled}
 			size='sm'
 			radius={radius}
 			variant={ButtonVariant}
