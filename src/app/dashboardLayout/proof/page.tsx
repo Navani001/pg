@@ -11,11 +11,13 @@ import { IoMdCloseCircleOutline, IoMdEye } from "react-icons/io";
 import { Chip } from "@/component/chip";
 import { useEffect, useState } from "react";
 import { ModelContent } from "./component/modelContent";
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react";
+import { Checkbox, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem } from "@heroui/react";
 import { getRequest, postRequest } from "@/utils";
 import { redirect } from "next/navigation";
 import { HiOutlineExclamationTriangle } from "react-icons/hi2";
 import { RxCrossCircled } from "react-icons/rx";
+
+
 interface UploadedFile {
     name: string;
     size: string;
@@ -23,7 +25,14 @@ interface UploadedFile {
 }
 
 export default function page() {
-   
+    const Payment: { key: string; label: string }[] = [
+        { key: "Online", label: "Online" },
+        { key: "Cash", label: "Cash" },
+        { key: "Cheque", label: "Cheque" },
+        { key: "UPI", label: "UPI" },
+        { key: "Card", label: "Card" },
+    ];
+    const [paymentMethod, setPaymentMethod] = useState<string>("ONLINE")
     const [openModel, setOpenModel] = useState(false);
     const [status, setStatus] = useState<string>("upload");
     const [monthData, setMonthData] = useState<any>([]
@@ -95,7 +104,7 @@ export default function page() {
     console.log("Current Month:", currentMonth);
     useEffect(() => {
         if (monthData?.months && monthData.months[selectedIndex]) {
-            setStatus(monthData.months[selectedIndex].status)   ;
+            setStatus(monthData.months[selectedIndex].status);
         }
     }, [selectedIndex, monthData])
     useEffect(() => {
@@ -129,7 +138,7 @@ export default function page() {
         formData.append("amount", amount);
         formData.append("month", selectedMonth.toString());
         formData.append("year", year);
-        formData.append("paymentMethod", "ONLINE");
+        formData.append("paymentMethod", paymentMethod);
 
 
         // Add files to FormData if they exist
@@ -163,6 +172,7 @@ export default function page() {
                 }
             });
     }
+    console.log(paymentMethod === "ONLINE")
     return (
         <div className="h-full w-full flex gap-3 flex-col p-4 md:p-6 ">
             <Modal isOpen={openModel} size={"2xl"} hideCloseButton onClose={() => setOpenModel(false)}>
@@ -206,7 +216,84 @@ export default function page() {
 
                 </div>
             }
-            {
+            {status === "Pending" && (
+                <div className="border px-5 py-3 rounded-lg">
+                    <div className="border py-1 border-gray-300 w-full shadow-sm overflow-hidden rounded-lg px-4 flex justify-between items-center">
+                        <Checkbox radius="full" color="success" isSelected={paymentMethod === "ONLINE"} onChange={() => setPaymentMethod("ONLINE")}></Checkbox>
+                        <Select
+                            variant="flat"
+                            classNames={{
+                                base: "w-full bg-transparent border-none shadow-none",
+                                trigger:
+                                    "bg-transparent border-none shadow-none focus:ring-0 focus:outline-none hover:!bg-transparent data-[hover=true]:!bg-transparent",
+                                value: "text-gray-700",
+                                listboxWrapper: "border border-gray-300 rounded-lg",
+                            }}
+                            placeholder="Online Payment"
+                        >
+                            {Payment.map((payment) => (
+                                <SelectItem
+                                    key={payment.key}
+                                    className="w-full border-b border-gray-200 last:border-none"
+                                >
+                                    {payment.label}
+                                </SelectItem>
+                            ))}
+                        </Select>
+                    </div>
+                    <h3 className="mt-3 font-semibold text-lg ">
+                        Upload Payment Screenshot
+                    </h3>
+                    <p className="mb-3 font-poppins">
+                        Upload your rent payment receipt/screenshot as proof of payment
+                    </p>
+                    <PayMentScreenShoot uploadedFile={uploadedFile} setUploadedFile={setUploadedFile} />
+                    <h3 className="my-3 font-semibold text-lg ">
+                        Upload Electricity Payment Screenshot
+                    </h3>
+                    <PayMentScreenShoot uploadedFile={uploadedElectFile} setUploadedFile={setUploadedElectFile} />
+                    <div className="border py-1 my-4 border-gray-300 w-full shadow-sm overflow-hidden rounded-lg px-4 flex justify-between items-center">
+
+                        <Checkbox radius="full" color="success" isSelected={paymentMethod === "CASH"} onChange={() => setPaymentMethod("CASH")}></Checkbox>
+
+                        <Select
+
+                            variant="flat"
+
+                            classNames={{
+
+                                base: "w-full bg-transparent border-none shadow-none",
+
+                                trigger:
+
+                                    "bg-transparent border-none shadow-none focus:ring-0 focus:outline-none hover:!bg-transparent data-[hover=true]:!bg-transparent",
+
+                                value: "text-gray-700",
+
+                                listboxWrapper: "border border-gray-300 rounded-lg",
+
+                            }}
+
+                            placeholder="Cash Payment"
+
+                        >
+
+                            <SelectItem className="w-full border-b border-gray-200 last:border-none">
+
+                                Cash
+
+                            </SelectItem>
+
+                        </Select>
+
+                    </div>
+
+                </div>
+
+            )}
+
+
+            {/* {
                 status === "Pending" &&
 
                 <div className="border px-5 py-3 rounded-lg">
@@ -217,7 +304,7 @@ export default function page() {
                     <h3 className="my-3 font-semibold text-lg ">Upload Electricity Payment Screenshot</h3>
                     <PayMentScreenShoot uploadedFile={uploadedElectFile} setUploadedFile={setUploadedElectFile} />
                 </div>
-            }
+            } */}
             {
                 status === "Pending" &&
 

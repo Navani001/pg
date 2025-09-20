@@ -2,7 +2,7 @@
 
 import { SignaturePad } from "@/component";
 import TermsAndConditions from "@/component/terms&conditions";
-import { putRequest } from "@/utils";
+import { getRequest, putRequest } from "@/utils";
 import {
   Button,
   Modal,
@@ -12,7 +12,7 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { Check, FileText } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IoMdCloudUpload } from "react-icons/io";
 import { IoFolderOutline } from "react-icons/io5";
 import { MdOutlineInfo } from "react-icons/md";
@@ -27,20 +27,91 @@ export default function Document() {
   const [uploadedFile, setUploadedFile] = useState<{
     name: string;
     size: string;
+    file?: File;
   } | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const[isApproved,setIsApproved]=useState(false)
+  const [isApproved, setIsApproved] = useState(false)
   const documentTypes = ["Aadhar Card", "PAN Card", "Passport"];
-  
+
+  const loadImageFromUrl = async (imageUrl: string) => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+
+      // Create a File object
+      const file = new File([blob], "downloaded-image.jpg", { type: blob.type });
+
+      // Create a DataTransfer to simulate user file selection
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.files = dataTransfer.files;
+
+        // ✅ trigger change event manually (important for React forms)
+        const event = new Event("change", { bubbles: true });
+        fileInputRef.current.dispatchEvent(event);
+      }
+    } catch (error) {
+      console.error("Error loading image:", error);
+    }
+  };
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    getRequest("api/v1/user/document-proof", {
+      authorization: `Bearer ${token}`
+    }).then((res: any) => {
+      if (res && res.success !== false) {
+        console.log("Document Proof Response:", res);
+        // loadImageFromUrl(res.data.documentUrl);
+        // setUploadedFile({name:res.data.fileName,size:(res.data.fileSize/1024/1024).toFixed(2)})
+      }
+    })
+    getRequest("api/v1/user/digital-signature", {
+      authorization: `Bearer ${token}`
+    }).then((res: any) => {
+      if (res && res.success !== false) {
+        console.log("Document Proof Response:", res);
+
+        // setUploadedFile({name:res.data.fileName,size:(res.data.fileSize/1024/1024).toFixed(2)})
+      }
+    })
+  }, [])
+  const handleFileSubmit = () => {
+    setSnackbarOpen(true);
+
+    // if (!isApproved) {
+    //   alert("Please agree to the Terms & Conditions first.");
+    //   return;
+    // }
+
+    // Use FormData for file upload
+    const formData = new FormData();
+    formData.append('documentProof', uploadedFile?.file as Blob);
+    const token = localStorage.getItem("token");
+
+    putRequest(`api/v1/user/document-proof`, formData, {
+      authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data'
+    }).then((res: any) => {
+      console.log("Upload Response:", res);
+      if (res && res.success !== false) {
+        alert("Document uploaded successfully!");
+      } else {
+        alert("Failed to upload document.");
+      }
+    });
+  };
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setUploadedFile({
         name: file.name,
         size: (file.size / 1024 / 1024).toFixed(2),
+        file: file,
       });
     }
   };
@@ -75,16 +146,14 @@ export default function Document() {
     // Convert to file for upload
     const signatureFile = dataURLtoFile(signatureDataURL, 'signature.png');
 
-    // Or convert to blob
-    const signatureBlob = dataURLtoBlob(signatureDataURL);
 
     // Use FormData for file upload
     const formData = new FormData();
-    formData.append('documentImage', signatureFile);
+    formData.append('documentProof', signatureFile);
     console.log(`Signature file size: ${(signatureFile.size / 1024 / 1024).toFixed(2)} MB`);
     const token = localStorage.getItem("token");
 
-    putRequest(`api/v1/user/document-proof`, formData, {
+    putRequest(`api/v1/user/digital-signature`, formData, {
       authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
     }).then((res: any) => {
@@ -96,7 +165,7 @@ export default function Document() {
       }
     });
   };
-  
+
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
@@ -151,9 +220,8 @@ export default function Document() {
             {documentTypes.map((options, index) => (
               <SelectItem
                 key={index}
-                className={`border-b border-gray-200 px-3 py-2 ${
-                  index === documentTypes.length - 1 ? "border-none" : ""
-                }`}
+                className={`border-b border-gray-200 px-3 py-2 ${index === documentTypes.length - 1 ? "border-none" : ""
+                  }`}
               >
                 {options}
               </SelectItem>
@@ -175,7 +243,7 @@ export default function Document() {
             </p>
             <p className="text-gray-900 mb-3">Upload the document image</p>
             <div className="flex items-center gap-1 md:gap-2 w-full justify-center">
-              <Button className="bg-red-500 hover:bg-red-600 text-white rounded-full font-medium inline-flex items-center">
+              <Button onPress={() => fileInputRef.current?.click()} className="bg-red-500 hover:bg-red-600 text-white rounded-full font-medium inline-flex items-center">
                 <IoFolderOutline className="w-4 h-4 font-bold" />
                 <span>Browse File</span>
               </Button>
@@ -206,17 +274,17 @@ export default function Document() {
                 </p>
               </div>
             </div>
-            <Button
+            {/* <Button
               variant="bordered"
               className="px-3 py-1 rounded-md text-sm font-medium"
             >
               Ready
-            </Button>
+            </Button> */}
           </div>
         )}
 
         <Button
-          onPress={handleSubmit}
+          onPress={handleFileSubmit}
           className="bg-red-500 hover:bg-red-600 mt-4 text-white px-6 py-2 rounded-md font-medium"
         >
           Submit for Approval
