@@ -10,8 +10,12 @@
   },
   "dependencies": {
     "@ai-sdk/google": "^1.2.2",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@heroui/react": "^2.7.5",
     "@heroui/theme": "2.4.12",
+    "@mui/icons-material": "^7.3.2",
+    "@mui/material": "^7.3.2",
     "@nanostores/react": "github:ai/react",
     "@tailwindcss/cli": "^4.0.14",
     "ai": "^4.0.22",
