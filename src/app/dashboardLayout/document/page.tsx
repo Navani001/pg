@@ -18,16 +18,21 @@ import { IoFolderOutline } from "react-icons/io5";
 import { MdOutlineInfo } from "react-icons/md";
 import SignatureCanvas from "react-signature-canvas";
 
+import CloseIcon from "@mui/icons-material/Close";
+import MuiAlert from "@mui/material/Alert";
+import IconButton from "@mui/material/IconButton";
+import Snackbar from "@mui/material/Snackbar";
+
 export default function Document() {
   const [uploadedFile, setUploadedFile] = useState<{
     name: string;
     size: string;
   } | null>(null);
-  const [isApproved, setIsApproved] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(true);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  
+  const[isApproved,setIsApproved]=useState(false)
   const documentTypes = ["Aadhar Card", "PAN Card", "Passport"];
   
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,10 +63,12 @@ export default function Document() {
     return new File([blob], filename, { type: blob.type });
   };
   const handleSubmit = () => {
-    if (!isApproved) {
-      alert("Please agree to the Terms & Conditions first.");
-      return;
-    }
+    setSnackbarOpen(true);
+
+    // if (!isApproved) {
+    //   alert("Please agree to the Terms & Conditions first.");
+    //   return;
+    // }
     const signatureDataURL = sigCanvas.current?.toDataURL();
     if (!signatureDataURL) return;
 
@@ -105,6 +112,10 @@ export default function Document() {
     }
   };
 
+
+  const handleSnackbarClose = () => setSnackbarOpen(false);
+
+
   return (
     <div className="h-full p-4 md:p-6 w-full overflow-y-scroll scrollbar-hide">
       <div className="mb-8">
@@ -123,7 +134,7 @@ export default function Document() {
         <div className="mb-6">
           <label className="flex gap-1 text-sm font-bold text-gray-700 items-center mb-3">
             Select Document Type
-            <span className=" text-gray-400 flex items-center">
+            <span className="text-gray-400 flex items-center">
               <MdOutlineInfo />
             </span>
           </label>
@@ -134,13 +145,12 @@ export default function Document() {
           <Select
             className="w-full"
             variant="bordered"
-            placeholder="Select an document"
-            classNames={{
-              listboxWrapper: "border border-gray-300 rounded-lg",
-            }}
+            placeholder="Select a document"
+            classNames={{ listboxWrapper: "border border-gray-300 rounded-lg" }}
           >
             {documentTypes.map((options, index) => (
               <SelectItem
+                key={index}
                 className={`border-b border-gray-200 px-3 py-2 ${
                   index === documentTypes.length - 1 ? "border-none" : ""
                 }`}
@@ -154,21 +164,18 @@ export default function Document() {
         {/* File Upload Area */}
         <div className="mb-6 font-semibold">
           <div
-            className="border-2 border-dashed rounded-lg px-8 py-4 text-center transition-colors 
-                 border-gray-900 hover:border-gray-400"
+            className="border-2 border-dashed rounded-lg px-8 py-4 text-center transition-colors border-gray-900 hover:border-gray-400"
             onDragOver={handleDragOver}
             onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
           >
             <IoMdCloudUpload className="w-12 h-12 text-gray-900 mx-auto mb-3" />
             <p className="text-gray-900 font-bold text-xl mb-2">
-              Drag & drop your document image here or click to browse and upload
+              Drag & drop your document image here or click to browse
             </p>
             <p className="text-gray-900 mb-3">Upload the document image</p>
-            <div className="flex items-center gap-1 md:gap-2 w-full justify-center ">
-              <Button
-                onPress={() => fileInputRef.current?.click()}
-                className="bg-red-500 hover:bg-red-600 text-white rounded-full font-mediuminline-flex items-center"
-              >
+            <div className="flex items-center gap-1 md:gap-2 w-full justify-center">
+              <Button className="bg-red-500 hover:bg-red-600 text-white rounded-full font-medium inline-flex items-center">
                 <IoFolderOutline className="w-4 h-4 font-bold" />
                 <span>Browse File</span>
               </Button>
@@ -201,14 +208,17 @@ export default function Document() {
             </div>
             <Button
               variant="bordered"
-              className="px-3 py-1 rounded-md text-sm font-medium "
+              className="px-3 py-1 rounded-md text-sm font-medium"
             >
               Ready
             </Button>
           </div>
         )}
 
-        <Button className="bg-red-500 hover:bg-red-600 mt-4 text-white px-6 py-2 rounded-md font-medium">
+        <Button
+          onPress={handleSubmit}
+          className="bg-red-500 hover:bg-red-600 mt-4 text-white px-6 py-2 rounded-md font-medium"
+        >
           Submit for Approval
         </Button>
       </div>
@@ -224,34 +234,55 @@ export default function Document() {
       <div className="mt-4">
         <SignaturePad sigCanvas={sigCanvas} />
       </div>
-      
+
       <div className="border p-6 w-full rounded-md mt-4">
         <p className="text-gray-900 font-semibold mb-6">
           By submitting my digital signature, I confirm that I have read and
           accepted the Hostel Rules & Regulations / Terms & Conditions.
         </p>
         <div className="flex justify-end w-full">
-          <Button onPress={handleSubmit} className="bg-red-500 hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3 px-6 rounded-md font-medium transition-colors">
+          <Button
+            onPress={handleSubmit}
+            className="bg-red-500 hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3 px-6 rounded-md font-medium transition-colors"
+          >
             Submit
           </Button>
         </div>
       </div>
 
-      {/* Success Message */}
-      {showSuccess && (
-        <div className="bg-green-500 text-white mt-5 p-4 rounded-lg shadow-lg flex items-center">
-          <Check className="w-5 h-5" />
-          <div>
-            <p className="font-medium">
-              Your document has been submitted and is pending admin approval.
-              You will be notified once it is reviewed.
-            </p>
-          </div>
-        </div>
-      )}
+      {/* MUI Snackbar */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <MuiAlert
+          onClose={handleSnackbarClose}
+          severity="success"
+          icon={<Check className="w-5 h-5 bg-white/30 text-white rounded-full" />}
+          sx={{
+            bgcolor: "#22c55e",
+            color: "#fff",
+            fontSize: "1rem",
+            borderRadius: "8px",
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            maxWidth: "95%",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+          }}
+        >
+          Your leave request has been submitted successfully and is under review
+          by the admin. You will be contacted shortly for the checkout process.
+        </MuiAlert>
+      </Snackbar>
 
+      {/* Terms & Conditions Modal */}
       <Modal isOpen={isOpen} onClose={onClose} size="2xl">
-        <ModalContent>{<TermsAndConditions  onClose={onClose} accepted={isApproved} setAccepted={setIsApproved} />}</ModalContent>
+        <ModalContent>
+          <TermsAndConditions onClose={onClose} accepted={isApproved} setAccepted={setIsApproved} />
+        </ModalContent>
       </Modal>
     </div>
   );

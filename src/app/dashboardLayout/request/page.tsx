@@ -1,9 +1,11 @@
 "use client";
-import { Button, DatePicker, form, Input, Select, SelectItem, Textarea } from "@heroui/react";
+import { formatCalendarDateToISO, postRequest } from "@/utils";
+import { Button, DatePicker, Input, Textarea } from "@heroui/react";
 import { CalendarDate } from "@internationalized/date";
+import MuiAlert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 import { Check } from "lucide-react";
 import { useState } from "react";
-import { formatCalendarDateToISO, convertISOToCalendarDate, postRequest } from "@/utils";
 export default function Request() {
   const [formData, setFormData] = useState({
     leaveDate: null as CalendarDate | null,
@@ -11,7 +13,9 @@ export default function Request() {
     feedback: "",
     confirmTerms: false,
   });
-  const [isSubmitted, setIsSubmitted] = useState(true);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const handleSnackbarClose = () => setSnackbarOpen(false);
+
 
   const handleInputChange = (e: any) => {
     const { name, value, type, checked } = e.target;
@@ -24,10 +28,10 @@ export default function Request() {
 
   const handleSubmit = () => {
     const formattedDate = formatCalendarDateToISO(formData.leaveDate);
-   
+    setSnackbarOpen(true);
     const token = localStorage.getItem("token");
     if (formData.confirmTerms && formData.leaveDate) {
-      setIsSubmitted(true);
+      
       console.log({
         feedback: formData.feedback,
         reason: formData.reason,
@@ -71,7 +75,6 @@ export default function Request() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-
             {/* 
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -201,23 +204,34 @@ export default function Request() {
         </div>
       </div>
 
-      {/* Success Message */}
-      {isSubmitted && (
-        <div className="mt-6 bg-green-500 text-white p-4 rounded-lg flex items-start space-x-3">
-          <div className="flex-shrink-0">
-            <div className="w-6 h-6 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-              <Check className="w-4 h-4" />
-            </div>
-          </div>
-          <div>
-            <p className="font-medium">
-              Your leave request has been submitted successfully and is under
-              review by the admin. You will be contacted shortly for the
-              checkout process.
-            </p>
-          </div>
-        </div>
-      )}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <MuiAlert
+          onClose={handleSnackbarClose}
+          severity="success"
+          icon={
+            <Check className="w-5 h-5 bg-white/30 text-white rounded-full" />
+          }
+          sx={{
+            bgcolor: "#22c55e",
+            color: "#fff",
+            fontSize: "1rem",
+            borderRadius: "8px",
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            maxWidth: "95%",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+          }}
+        >
+          Your leave request has been submitted successfully and is under review
+          by the admin. You will be contacted shortly for the checkout process.
+        </MuiAlert>
+      </Snackbar>
     </div>
   );
 }
