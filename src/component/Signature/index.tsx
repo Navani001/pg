@@ -1,15 +1,54 @@
 // SignaturePad.tsx
 import { cn } from "@heroui/react";
-import React, { useRef } from "react";
+import React, { RefObject, useEffect, useRef } from "react";
 import { FaUndoAlt } from "react-icons/fa";
 import { IoPencil } from "react-icons/io5";
 import { MdUndo } from "react-icons/md";
 import SignatureCanvas from "react-signature-canvas";
 import { ButtonComponent } from "../button";
+import { getRequest } from "@/utils";
+import { redirect } from "next/dist/client/components/navigation";
 
-export const SignaturePad: React.FC = () => {
-  const sigCanvas = useRef<SignatureCanvas>(null);
+export const SignaturePad = ({ sigCanvas }: { sigCanvas: RefObject<SignatureCanvas | null> }) => {
+  // const sigCanvas = useRef<SignatureCanvas>(null);
   const [isDrawing, setIsDrawing] = React.useState(false);
+  // Function to load signature from image URL
+  const loadSignatureFromUrl = async (imageUrl: string) => {
+    try {
+      // If it's already a data URL, use it directly
+      if (imageUrl.startsWith('data:')) {
+        sigCanvas.current?.fromDataURL(imageUrl);
+        return;
+      }
+
+      // For regular URLs, convert to data URL first
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result as string;
+        sigCanvas.current?.fromDataURL(dataUrl);
+      };
+      reader.readAsDataURL(blob);
+    } catch (error) {
+      console.error('Error loading signature from URL:', error);
+    }
+  };
+  useEffect(()=>{
+    const token = localStorage.getItem("token");
+    getRequest(`api/v1/user/document-proof`, { authorization: `Bearer ${token}` }).then((res: any) => {
+        console.log("Overview Response:", res);
+        if (res && res.success !== false) {
+          // sigCanvas.current?.fromDataURL(res.data.documentUrl || "");
+          if (res.data.documentUrl) {
+            loadSignatureFromUrl(res.data.documentUrl);
+          }
+        } else {
+          redirect('/login')
+        }
+      });
+  },[])
   const clear = () => {
     sigCanvas.current?.clear();
   };

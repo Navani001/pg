@@ -8,24 +8,16 @@ import { YearDropDown } from "../yearDrop";
 import { getRequest } from "@/utils";
 import { redirect } from "next/navigation";
 
-export function Month() {
-   const [year,setYear]=useState<string>(new Date().getFullYear().toString())
-    const [monthData,setMonthData]=useState<any>("")
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        getRequest(`api/v1/user/payments/year/${year}`, { authorization: `Bearer ${token}`}).then((res:any) => {
-              console.log("Overview Response:", res);
-              if (res && res.success !== false){
-                setMonthData(res.data)
-              }else{
-                redirect('/login')
-              }
-            });
+export function Month({ monthData, setMonthData, year, setYear, selectedMonth ,setSelectedMonth}:{monthData:any,setMonthData:any,year:string,setYear:any
+,selectedMonth:number,setSelectedMonth:any
+}) {
+    var months:any = {"January":1, "February":2, "March":3, "April":4, "May":5, "June":6, "July":7, "August":8, "September":9, "October":10, "November":11, "December":12};
+    const getMonthName = (monthString: string) => {
+        return monthString.split(' ')[0];
+    };
+        console.log("Month Data:", monthData?.months);
+   
 
-    },[year])
-    const currentMonth = new Date().getMonth().toString();
-    console.log("Current Month:", currentMonth);
-    const [selectedMonth, setSelectedMonth] = useState<number | null>(parseInt(currentMonth))
     return (
         <div className="  flex flex-col w-full  gap-3 ">
             <div className="">
@@ -39,7 +31,10 @@ export function Month() {
                         status: string,
                         monthNumber: number
                     }) => (
-                        <MonthCard status={month.status} key={month.monthNumber} month={month.month} selected={parseInt(currentMonth) === selectedMonth} onClick={() => setSelectedMonth(month.monthNumber)} />
+                        <MonthCard status={month.status} monthNumber={month.monthNumber}
+                         key={month.month} month={month.month} 
+                            selected={months[getMonthName(month.month)] === selectedMonth } 
+                            onClick={() => setSelectedMonth(months[getMonthName(month.month)])} />
                     ))
                 }
             </div>

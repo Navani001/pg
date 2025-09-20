@@ -5,7 +5,8 @@ import { useRef, useState } from "react";
 import { IoFolderOutline } from "react-icons/io5";
 import { FiDownload } from "react-icons/fi";
 interface PayMentScreenShootProps {
-
+uploadedFile: UploadedFile | null;
+setUploadedFile: (file: UploadedFile | null) => void;
 
 }
 interface UploadedFile {
@@ -14,9 +15,8 @@ interface UploadedFile {
     file: File;
 }
 export function PayMentScreenShoot(props: PayMentScreenShootProps) {
-    const{}=props
+    const { uploadedFile, setUploadedFile }=props
    
-    const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
      const fileInputRef = useRef<HTMLInputElement | null>(null);
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -58,7 +58,7 @@ export function PayMentScreenShoot(props: PayMentScreenShootProps) {
                 onPress={() => fileInputRef.current?.click()}
                 className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 w-auto h-auto rounded-lg font-medium transition-colors inline-flex items-center "
             >
-                <FiDownload className="w-12 h-12 font-bold" />
+                <FiDownload className="w-5 h-5 font-bold" />
          
                 <span>Upload Screenshot</span>
             </Button></div>

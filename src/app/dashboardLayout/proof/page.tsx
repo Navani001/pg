@@ -9,14 +9,87 @@ import { MdPayment } from "react-icons/md";
 import { PaymentDropDown } from "./component/payment";
 import { IoMdCloseCircleOutline, IoMdEye } from "react-icons/io";
 import { Chip } from "@/component/chip";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ModelContent } from "./component/modelContent";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react";
-
+import { getRequest, postRequest } from "@/utils";
+import { redirect } from "next/navigation";
+interface UploadedFile {
+    name: string;
+    size: string;
+    file: File;
+}
 
 export default function page() {
-    const status: string = "upload"
+    const status: string = "pending"
     const [openModel, setOpenModel] = useState(false);
+    const [monthData, setMonthData] = useState<any>([])
+    const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
+    const [uploadedElectFile, setUploadedElectFile] = useState<UploadedFile | null>(null);
+    const [amount, setAmount] = useState<string>()
+    const [year, setYear] = useState<string>(new Date().getFullYear().toString())
+    const currentMonth = new Date().getMonth().toString();
+    const [selectedMonth, setSelectedMonth] = useState<number>(parseInt(currentMonth) + 1)
+    console.log("Current Month:", currentMonth);
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        getRequest(`api/v1/user/payments/year/${year}`, { authorization: `Bearer ${token}` }).then((res: any) => {
+            console.log("Overview Response:", res);
+            if (res && res.success !== false) {
+                setMonthData(res.data)
+            } else {
+                redirect('/login')
+            }
+        });
+
+    }, [year])
+    const handleSubmit = () => {
+        if (!amount) {
+            alert("Please enter the amount");
+            return;
+        }
+        const token = localStorage.getItem("token");
+
+        const formData = new FormData();
+
+        console.log(uploadedFile)
+
+        // Add all form fields to FormData
+        formData.append("amount", amount);
+        formData.append("month", selectedMonth.toString());
+        formData.append("year", year);
+
+        // Add files to FormData if they exist
+        if (uploadedFile?.file) {
+            formData.append("rentBillScreenshot", uploadedFile.file);
+        }
+
+        if (uploadedElectFile?.file) {
+            formData.append("electricityBillScreenshot", uploadedElectFile.file);
+        }
+
+        // Make sure your postRequest function handles FormData correctly
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+        // Remove Content-Type to let browser set it automatically for FormData
+        delete (headers as any)['Content-Type'];
+
+        postRequest(`api/v1/user/payments/upload/online`, formData, headers)
+            .then((res: any) => {
+                console.log("Upload Response:", res);
+                if (res.success) {
+                    alert("Upload successful!");
+                    // Refresh page or update state
+                }
+            })
+            .catch((error: any) => {
+                console.error("Upload Error:", error);
+                if (error.response?.data) {
+                    console.error("Error details:", error.response.data);
+                }
+            });
+    }
     return (
         <div className="h-full w-full flex gap-3 flex-col p-4 md:p-6 ">
             <Modal isOpen={openModel} size={"2xl"} hideCloseButton onClose={() => setOpenModel(false)}>
@@ -37,7 +110,7 @@ export default function page() {
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
                 Upload Proof
             </h1>
-            <Month />
+            <Month monthData={monthData} setMonthData={setMonthData} year={year} setYear={setYear} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
             <div className="mb-4"></div>
             <DetailProof header="Proof Details" month="August 2025" status="pending" amount="$ 2,430" />
             {status === "pending" &&
@@ -46,10 +119,10 @@ export default function page() {
                     <p>Enter your rent / fee amount below and click submit</p>
                     <div className="flex gap-2 items-center">
                         <div className="w-[40%]  mt-2 flex items-center gap-3 ">
-                            <InputField />
+                            <InputField type="number" value={amount} inputOnChange={(e) => setAmount(e.target.value)} />
                         </div>
                         <div className="w-[40%]  mt-2 flex items-center gap-3 ">
-                            <ButtonComponent buttonText="Submit" baseClassName="w-auto h-auto p-3 bg-primary-800 text-white" isIcon={false} />
+                            <ButtonComponent bgColor="bg-primary-800" handleOnClick={handleSubmit} buttonText="Submit" baseClassName="w-auto h-auto p-3 bg-primary-800 text-white" isIcon={false} />
                         </div>
                     </div>
                     <div className="mt-2">
@@ -66,9 +139,9 @@ export default function page() {
                     <PaymentDropDown />
                     <h3 className="mt-3 font-semibold text-lg ">Upload Payment Screenshot</h3>
                     <p className="mb-3 font-poppins">Upload your rent payment receipt/screenshot as proof of payment</p>
-                    <PayMentScreenShoot />
+                    <PayMentScreenShoot uploadedFile={uploadedFile} setUploadedFile={setUploadedFile} />
                     <h3 className="my-3 font-semibold text-lg ">Upload Electricity Payment Screenshot</h3>
-                    <PayMentScreenShoot />
+                    <PayMentScreenShoot uploadedFile={uploadedElectFile} setUploadedFile={setUploadedElectFile} />
                 </div>
             }
             {
@@ -88,17 +161,17 @@ export default function page() {
                     <div className="border md:col-span-3 rounded-lg p-2 flex flex-col gap-2">
                         <div className="flex justify-between items-center">
                             <span className="font-semibold">Current Status</span>
-                            <ButtonComponent handleOnClick={()=>{
-                                    setOpenModel(!openModel);
+                            <ButtonComponent handleOnClick={() => {
+                                setOpenModel(!openModel);
                             }} buttonText="View Status" isEndIcon={false} isStartIcon buttonIcon={<IoMdEye className="" />} baseClassName="w-auto h-auto p-2   " />
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="text-sm">Your Payment Status</span>
                             <Chip label="Under Review" className="bg-primary-500 !text-xs" />
                         </div>
-                            <p className="w-[80%] font-light text-sm">Once you upload, the status changes to Under Review automatically. If rejected,
-                                you can upload again. Once approved,
-                                re-uploads are disabled.</p>
+                        <p className="w-[80%] font-light text-sm">Once you upload, the status changes to Under Review automatically. If rejected,
+                            you can upload again. Once approved,
+                            re-uploads are disabled.</p>
                     </div>
                     <div className="md:col-span-2">
                         <NoteProof content="Make sure your screenshot is clear
@@ -110,7 +183,7 @@ export default function page() {
                 </div>
             }
             {/* <Modals size={"lg"} width="1029px" hideCloseButton ModalContents={<ModelContent/>} isopen={openModel} onClose={() => setOpenModel(false)} /> */}
-           
+
         </div>
     );
 }

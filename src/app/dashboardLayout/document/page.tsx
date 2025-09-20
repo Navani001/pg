@@ -2,6 +2,7 @@
 
 import { SignaturePad } from "@/component";
 import TermsAndConditions from "@/component/terms&conditions";
+import { putRequest } from "@/utils";
 import {
   Button,
   Modal,
@@ -15,18 +16,20 @@ import { useRef, useState } from "react";
 import { IoMdCloudUpload } from "react-icons/io";
 import { IoFolderOutline } from "react-icons/io5";
 import { MdOutlineInfo } from "react-icons/md";
+import SignatureCanvas from "react-signature-canvas";
 
 export default function Document() {
   const [uploadedFile, setUploadedFile] = useState<{
     name: string;
     size: string;
   } | null>(null);
+  const [isApproved, setIsApproved] = useState(false);
   const [showSuccess, setShowSuccess] = useState(true);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  
   const documentTypes = ["Aadhar Card", "PAN Card", "Passport"];
-
+  
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -36,7 +39,57 @@ export default function Document() {
       });
     }
   };
+  const sigCanvas = useRef<SignatureCanvas>(null);
+  const dataURLtoBlob = (dataURL: string): Blob => {
+    const arr = dataURL.split(',');
+    const mime = arr[0].match(/:(.*?);/)?.[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  };
 
+  // Convert to File
+  const dataURLtoFile = (dataURL: string, filename: string): File => {
+    const blob = dataURLtoBlob(dataURL);
+    return new File([blob], filename, { type: blob.type });
+  };
+  const handleSubmit = () => {
+    if (!isApproved) {
+      alert("Please agree to the Terms & Conditions first.");
+      return;
+    }
+    const signatureDataURL = sigCanvas.current?.toDataURL();
+    if (!signatureDataURL) return;
+
+    // Convert to file for upload
+    const signatureFile = dataURLtoFile(signatureDataURL, 'signature.png');
+
+    // Or convert to blob
+    const signatureBlob = dataURLtoBlob(signatureDataURL);
+
+    // Use FormData for file upload
+    const formData = new FormData();
+    formData.append('documentImage', signatureFile);
+    console.log(`Signature file size: ${(signatureFile.size / 1024 / 1024).toFixed(2)} MB`);
+    const token = localStorage.getItem("token");
+
+    putRequest(`api/v1/user/document-proof`, formData, {
+      authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data'
+    }).then((res: any) => {
+      console.log("Upload Response:", res);
+      if (res && res.success !== false) {
+        alert("Document uploaded successfully!");
+      } else {
+        alert("Failed to upload document.");
+      }
+    });
+  };
+  
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
@@ -169,7 +222,7 @@ export default function Document() {
         Terms & Conditions
       </Button>
       <div className="mt-4">
-        <SignaturePad />
+        <SignaturePad sigCanvas={sigCanvas} />
       </div>
       
       <div className="border p-6 w-full rounded-md mt-4">
@@ -178,7 +231,7 @@ export default function Document() {
           accepted the Hostel Rules & Regulations / Terms & Conditions.
         </p>
         <div className="flex justify-end w-full">
-          <Button className="bg-red-500 hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3 px-6 rounded-md font-medium transition-colors">
+          <Button onPress={handleSubmit} className="bg-red-500 hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3 px-6 rounded-md font-medium transition-colors">
             Submit
           </Button>
         </div>
@@ -198,7 +251,7 @@ export default function Document() {
       )}
 
       <Modal isOpen={isOpen} onClose={onClose} size="2xl">
-        <ModalContent>{<TermsAndConditions />}</ModalContent>
+        <ModalContent>{<TermsAndConditions  onClose={onClose} accepted={isApproved} setAccepted={setIsApproved} />}</ModalContent>
       </Modal>
     </div>
   );
