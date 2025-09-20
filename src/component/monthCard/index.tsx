@@ -36,7 +36,7 @@ props:MonthCardProps) => {
     })();
     
 	return (
-		<div onClick={onClick}  className={cn('border min-w-[240px]  p-2 max-w-[308px] flex justify-center items-center rounded-lg',{ "bg-primary-50": selected })}>
+		<div onClick={onClick}  className={cn('border min-w-[210px]   p-2 max-w-[308px] flex justify-center items-center rounded-lg',{ "bg-primary-50": selected })}>
         <div className='flex flex-col  w-full '>
          <div className={cn('font-semibold text-md ',{"text-white": selected})}>{month}</div>
                 <div className={cn('', { "text-white": selected })}>{status == "Pending" ? "DUE" : "PAID"} on {month?.slice(0,3)} {monthNumber}</div>

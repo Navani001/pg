@@ -32,7 +32,7 @@ export function Month({ monthData, setMonthData, year, setYear, selectedMonth ,s
                 {/* <ButtonComponent iconClassName="ml-1" baseClassName="w-auto h-auto p-3 !rounded-lg " buttonIcon={<SlCalender />} buttonText={`${year}`} /> */}
                 <YearDropDown year={year} setYear={setYear} joinYear={monthData.joiningYear} />
             </div>
-            <div className="w-full grid lg:grid-cols-6 md:grid-cols-4 sm:grid-cols-2   gap-2">
+            <div className="w-full grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2   gap-2">
                 {
                     monthData?.months?.map((month: { 
                         month: string,

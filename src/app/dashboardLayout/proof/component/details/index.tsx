@@ -15,7 +15,7 @@ export function DetailProof(props:DetailProofProps) {
     const{header, month, status, amount}=props
     const label: LabelType = (() => {
         switch (status) {
-            case "pending":
+            case "Pending":
                 return { className: "bg-primary text-white", text: "pending" };
             case "upload":
                 return { className: "bg-success text-white", text: "upload" };

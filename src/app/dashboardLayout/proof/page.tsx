@@ -14,6 +14,8 @@ import { ModelContent } from "./component/modelContent";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react";
 import { getRequest, postRequest } from "@/utils";
 import { redirect } from "next/navigation";
+import { HiOutlineExclamationTriangle } from "react-icons/hi2";
+import { RxCrossCircled } from "react-icons/rx";
 interface UploadedFile {
     name: string;
     size: string;
@@ -21,9 +23,68 @@ interface UploadedFile {
 }
 
 export default function page() {
-    const status: string = "pending"
+   
     const [openModel, setOpenModel] = useState(false);
-    const [monthData, setMonthData] = useState<any>([])
+    const [status, setStatus] = useState<string>("upload");
+    const [monthData, setMonthData] = useState<any>([]
+        //     { "months": [
+        //     {
+        //         "month": "September 2025",
+        //         "status": "Pending",
+        //         "monthNumber": 9
+        //     }, {
+        //         "month": "August 2025",
+        //         "status": "Pending",
+        //         "monthNumber": 9
+        //     }
+        //     , {
+        //         "month": "August 2025",
+        //         "status": "Pending",
+        //         "monthNumber": 9
+        //     }, {
+        //         "month": "August 2025",
+        //         "status": "Pending",
+        //         "monthNumber": 9
+        //     }, {
+        //         "month": "August 2025",
+        //         "status": "Pending",
+        //         "monthNumber": 9
+        //     }, {
+        //         "month": "August 2025",
+        //         "status": "Pending",
+        //         "monthNumber": 9
+        //     }, {
+        //         "month": "August 2025",
+        //         "status": "Pending",
+        //         "monthNumber": 9
+        //     }, {
+        //         "month": "August 2025",
+        //         "status": "Pending",
+        //         "monthNumber": 9
+        //     }, {
+        //         "month": "August 2025",
+        //         "status": "Pending",
+        //         "monthNumber": 9
+        //     }, {
+        //         "month": "August 2025",
+        //         "status": "Pending",
+        //         "monthNumber": 9
+        //     }, {
+        //         "month": "August 2025",
+        //         "status": "Pending",
+        //         "monthNumber": 9
+        //     }, {
+        //         "month": "August 2025",
+        //         "status": "Pending",
+        //         "monthNumber": 9
+        //     }, {
+        //         "month": "August 2025",
+        //         "status": "Pending",
+        //         "monthNumber": 9
+        //     }
+        // ]}
+    )
+    const reason: string[] = ["Blurry or unclear image", "Incomplete screenshot"];
     const [selectedIndex, setSelectedIndex] = useState<number>(0)
     const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
     const [uploadedElectFile, setUploadedElectFile] = useState<UploadedFile | null>(null);
@@ -33,9 +94,15 @@ export default function page() {
     const [selectedMonth, setSelectedMonth] = useState<number>(parseInt(currentMonth) + 1)
     console.log("Current Month:", currentMonth);
     useEffect(() => {
+        if (monthData?.months && monthData.months[selectedIndex]) {
+            setStatus(monthData.months[selectedIndex].status)   ;
+        }
+    }, [selectedIndex, monthData])
+    useEffect(() => {
         const token = localStorage.getItem("token");
-        getRequest(`api/v1/user/payments/year/${year}`, { authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        getRequest(`api/v1/user/payments/year/${year}`, {
+            authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
 
         }).then((res: any) => {
             console.log("Overview Response:", res);
@@ -118,12 +185,13 @@ export default function page() {
             </h1>
             <Month monthData={monthData} setMonthData={setMonthData} year={year} setYear={setYear} selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
             <div className="mb-4"></div>
-            <DetailProof header="Proof Details" month="August 2025" status="pending" amount="$ 2,430" />
-            {status === "pending" &&
+
+            <DetailProof header="Proof Details" month={monthData && monthData?.month && monthData?.months.length > 0 ? `${monthData?.months[selectedIndex]?.month} ${year}` : ""} status={status} amount="$ 2,430" />
+            {status === "Pending" &&
                 <div className="flex flex-col">
                     <span className="font-semibold">Amount</span>
                     <p>Enter your rent / fee amount below and click submit</p>
-                    <div className="flex gap-2 items-center">
+                    <   div className="flex gap-2 items-center">
                         <div className="w-[40%]  mt-2 flex items-center gap-3 ">
                             <InputField type="number" value={amount} inputOnChange={(e) => setAmount(e.target.value)} />
                         </div>
@@ -133,13 +201,13 @@ export default function page() {
                     </div>
                     <div className="mt-2">
 
-                        <ButtonComponent isEndIcon={false} disabled bgColor="bg-primary-50"  isStartIcon={true} buttonText="Payment Type" baseClassName="w-auto h-auto p-3 bg-primary-50 text-white rounded-xl" buttonIcon={<MdPayment />} />
+                        <ButtonComponent isEndIcon={false} disabled bgColor="bg-primary-50" isStartIcon={true} buttonText="Payment Type" baseClassName="w-auto h-auto p-3 bg-primary-50 text-white rounded-xl" buttonIcon={<MdPayment />} />
                     </div>
 
                 </div>
             }
             {
-                status === "pending" &&
+                status === "Pending" &&
 
                 <div className="border px-5 py-3 rounded-lg">
                     <PaymentDropDown />
@@ -151,7 +219,7 @@ export default function page() {
                 </div>
             }
             {
-                status === "pending" &&
+                status === "Pending" &&
 
                 <div className="my-2 max-w-sm">
                     <NoteProof content="Make sure your screenshot is clear
@@ -161,6 +229,44 @@ export default function page() {
 
                 </div>
             }
+            {status === "rejection" && (
+                <div className="space-y-2">
+                    <div className="flex items-center my-1 gap-3 shadow-md bg-orange-500 border-0 border-orange-600 text-gray-900 px-4 py-3 rounded-lg">
+                        <HiOutlineExclamationTriangle className="text-xl font-bold" />
+                        <div>
+                            <h2 className="text-lg font-bold">
+                                Your payment screenshoot has been rejected by the admin.
+                            </h2>
+                            <p>
+                                please review the reason below and follow the recommended steps
+                                to resolve.
+                            </p>
+                        </div>
+                    </div>
+                    <div className="border px-5 py-3 mb-4 rounded-lg mt-3">
+                        <h3 className="font-semibold text-lg mb-2">Rejection Reason</h3>
+                        <div className="space-y-2">
+                            {reason.map((item, idx) => (
+                                <div
+                                    key={idx}
+                                    className="flex items-center gap-2 text-gray-900"
+                                >
+                                    <RxCrossCircled className="text-xl" />
+                                    <div className="text-gray-900 font-semibold">{item}</div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <h2 className="text-xl font-bold">Upload Payment Screenshot</h2>
+                    <p>Upload your rent payment receipt/screenshot as proof of payment</p>
+                    <PayMentScreenShoot uploadedFile={uploadedFile} setUploadedFile={setUploadedFile} />
+                    <h2 className="text-xl font-bold">
+                        Upload Electricity Payment Screenshot
+                    </h2>
+                    <PayMentScreenShoot uploadedFile={uploadedElectFile} setUploadedFile={setUploadedElectFile} />
+                    <div className="mt-5" />
+                </div>
+            )}
             {
                 status === "upload" &&
                 <div className="grid md:grid-cols-5 justify-between w-full gap-3 mt-3">
