@@ -2,7 +2,15 @@
 import { ButtonComponent } from "@/component";
 import { Chip } from "@/component/chip";
 import { InputField } from "@/component/input";
-import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
+import {
+  Checkbox,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  Select,
+  SelectItem,
+} from "@heroui/react";
 import { useState } from "react";
 import { HiOutlineExclamationTriangle } from "react-icons/hi2";
 import { IoMdCloseCircleOutline, IoMdEye } from "react-icons/io";
@@ -12,12 +20,18 @@ import { Month } from "./component/Month";
 import { DetailProof } from "./component/details";
 import { ModelContent } from "./component/modelContent";
 import { NoteProof } from "./component/note";
-import { PaymentDropDown } from "./component/payment";
 import { PayMentScreenShoot } from "./component/paymentScreenShot";
 
 export default function page() {
-  const status: string = "rejection";
+  const status: string = "pending";
   const reason: string[] = ["Blurry or unclear image", "Incomplete screenshot"];
+  const Payment: { key: string; label: string }[] = [
+    { key: "Online", label: "Online" },
+    { key: "Cash", label: "Cash" },
+    { key: "Cheque", label: "Cheque" },
+    { key: "UPI", label: "UPI" },
+    { key: "Card", label: "Card" },
+  ];
   const [openModel, setOpenModel] = useState(false);
   return (
     <div className="h-full w-full flex gap-3 flex-col p-4 md:p-6 ">
@@ -30,7 +44,7 @@ export default function page() {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex justify-between gap-1">
+              <ModalHeader className="flex justify-between gap-1 bg-[#111]">
                 {" "}
                 Payment Verification Status
                 <ButtonComponent
@@ -87,7 +101,29 @@ export default function page() {
       )}
       {status === "pending" && (
         <div className="border px-5 py-3 rounded-lg">
-          <PaymentDropDown />
+          <div className="border py-1 border-gray-300 w-full shadow-sm overflow-hidden rounded-lg px-4 flex justify-between items-center">
+            <Checkbox radius="full" color="success"></Checkbox>
+            <Select
+              variant="flat"
+              classNames={{
+                base: "w-full bg-transparent border-none shadow-none",
+                trigger:
+                  "bg-transparent border-none shadow-none focus:ring-0 focus:outline-none hover:!bg-transparent data-[hover=true]:!bg-transparent",
+                value: "text-gray-700",
+                listboxWrapper: "border border-gray-300 rounded-lg",
+              }}
+              placeholder="Online Payment"
+            >
+              {Payment.map((payment) => (
+                <SelectItem
+                  key={payment.key}
+                  className="w-full border-b border-gray-200 last:border-none"
+                >
+                  {payment.label}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
           <h3 className="mt-3 font-semibold text-lg ">
             Upload Payment Screenshot
           </h3>
@@ -99,6 +135,24 @@ export default function page() {
             Upload Electricity Payment Screenshot
           </h3>
           <PayMentScreenShoot />
+          <div className="border py-1 my-4 border-gray-300 w-full shadow-sm overflow-hidden rounded-lg px-4 flex justify-between items-center">
+            <Checkbox radius="full" color="success"></Checkbox>
+            <Select
+              variant="flat"
+              classNames={{
+                base: "w-full bg-transparent border-none shadow-none",
+                trigger:
+                  "bg-transparent border-none shadow-none focus:ring-0 focus:outline-none hover:!bg-transparent data-[hover=true]:!bg-transparent",
+                value: "text-gray-700",
+                listboxWrapper: "border border-gray-300 rounded-lg",
+              }}
+              placeholder="Cash Payment"
+            >
+              <SelectItem className="w-full border-b border-gray-200 last:border-none">
+                Cash
+              </SelectItem>
+            </Select>
+          </div>
         </div>
       )}
       {status === "rejection" && (
