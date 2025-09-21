@@ -1,9 +1,8 @@
 "use client";
 import { ButtonComponent } from "@/component";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react";
 import { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
-import { SlCalender } from "react-icons/sl";
 
 export function PaymentDropDown() {
     const [payment, setPayment] = useState<string>("Online")

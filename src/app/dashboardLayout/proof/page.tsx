@@ -1,21 +1,19 @@
 "use client"
-import { ButtonComponent, Modals, Sidebar } from "@/component";
+import { ButtonComponent } from "@/component";
+import { Chip } from "@/component/chip";
+import { InputField } from "@/component/input";
+import { getRequest, postRequest } from "@/utils";
+import { Button, Checkbox, Modal, ModalBody, ModalContent, ModalHeader, Select, SelectItem, Spinner } from "@heroui/react";
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
+import { HiOutlineExclamationTriangle } from "react-icons/hi2";
+import { IoMdCloseCircleOutline } from "react-icons/io";
+import { RxCrossCircled } from "react-icons/rx";
 import { Month } from "./component/Month";
 import { DetailProof } from "./component/details";
+import { ModelContent } from "./component/modelContent";
 import { NoteProof } from "./component/note";
 import { PayMentScreenShoot } from "./component/paymentScreenShot";
-import { InputField } from "@/component/input";
-import { MdPayment } from "react-icons/md";
-import { PaymentDropDown } from "./component/payment";
-import { IoMdCloseCircleOutline, IoMdEye } from "react-icons/io";
-import { Chip } from "@/component/chip";
-import { useEffect, useState } from "react";
-import { ModelContent } from "./component/modelContent";
-import { Button, Checkbox, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Spinner } from "@heroui/react";
-import { getRequest, postRequest } from "@/utils";
-import { redirect } from "next/navigation";
-import { HiOutlineExclamationTriangle } from "react-icons/hi2";
-import { RxCrossCircled } from "react-icons/rx";
 
 
 interface UploadedFile {

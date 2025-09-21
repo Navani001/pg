@@ -18,9 +18,7 @@ import { IoFolderOutline } from "react-icons/io5";
 import { MdOutlineInfo } from "react-icons/md";
 import SignatureCanvas from "react-signature-canvas";
 
-import CloseIcon from "@mui/icons-material/Close";
 import MuiAlert from "@mui/material/Alert";
-import IconButton from "@mui/material/IconButton";
 import Snackbar from "@mui/material/Snackbar";
 
 export default function Document() {

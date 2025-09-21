@@ -1,12 +1,7 @@
 "use client"
 
-import { ButtonComponent, MonthCard, Sidebar } from "@/component";
-import { SlCalender } from "react-icons/sl";
-import { DetailProof } from "../details";
-import { useEffect, useState } from "react";
+import { MonthCard } from "@/component";
 import { YearDropDown } from "../yearDrop";
-import { getRequest } from "@/utils";
-import { redirect } from "next/navigation";
 interface MonthProps {
 
     monthData: any,

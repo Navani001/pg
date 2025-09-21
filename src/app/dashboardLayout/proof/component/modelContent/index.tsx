@@ -1,6 +1,4 @@
-import { ButtonComponent } from "@/component";
 import { Chip } from "@/component/chip";
-import { IoMdCloseCircleOutline } from "react-icons/io";
 
 interface ModelContentProps {
 
@@ -14,7 +12,7 @@ export function ModelContent(props: ModelContentProps) {
                 <div className="flex justify-between w-full ">
                     <div className="w-[50%] font-normal text-sm"> Current Status</div>
                     <div className="w-[50%]"><Chip label="Under Review" textClassName="!text-[10px]" className="bg-primary-500 !text-xs" />
-                </div>
+                    </div>
 
                 </div>
                 <div className="flex justify-between w-full ">
@@ -27,7 +25,7 @@ export function ModelContent(props: ModelContentProps) {
                 <div className="flex justify-between w-full ">
                     <div className="w-[50%] font-normal text-sm">Billing Month</div>
                     <div className="w-[50%] text-sm">
-August 2025                    </div>
+                        August 2025                    </div>
 
                 </div>
             </div>
