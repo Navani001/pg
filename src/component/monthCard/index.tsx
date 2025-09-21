@@ -8,6 +8,7 @@ interface MonthCardProps {
     status?: string;
     selected?:boolean
     onClick?:()=>void
+    monthNumber?:number
 
 }
 interface LabelType{
@@ -20,11 +21,12 @@ props:MonthCardProps) => {
         month,
         status,
         selected,
-        onClick
+        onClick,
+        monthNumber
     } = props
     const label:LabelType = (() => {
         switch(status){
-            case "pending": 
+            case "Pending": 
                 return {className:"bg-primary text-white",text:"pending"};
             case "upload": 
                 return {className:"bg-success text-white",text:"upload"};
@@ -34,10 +36,10 @@ props:MonthCardProps) => {
     })();
     
 	return (
-		<div onClick={onClick}  className={cn('border  p-2 max-w-[308px] flex justify-center items-center rounded-lg',{ "bg-primary-50": selected })}>
+		<div onClick={onClick}  className={cn('border min-w-[210px]   p-2 max-w-[308px] flex justify-center items-center rounded-lg',{ "bg-primary-50": selected })}>
         <div className='flex flex-col  w-full '>
          <div className={cn('font-semibold text-md ',{"text-white": selected})}>{month}</div>
-         <div className={cn('',{"text-white": selected})}>Paid on Jan 05</div>
+                <div className={cn('', { "text-white": selected })}>{status == "Pending" ? "DUE" : "PAID"} on {month?.slice(0,3)} {monthNumber}</div>
         </div>
        {label.text!='' && <Chip label={label.text} className={label.className} />}
         </div>

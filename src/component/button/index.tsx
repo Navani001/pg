@@ -24,7 +24,7 @@ export type ButtonProps = {
     /** Flag to determine if the button should display an icon */
     isIcon?: boolean;
     isStartIcon?: boolean;
-    isEndIcon?:boolean
+    isEndIcon?: boolean
     /** Custom background color for button */
     bgColor?: string;
     radius?: 'sm' | 'md' | 'lg' | 'full';
@@ -37,6 +37,7 @@ export type ButtonProps = {
     | 'shadow'
     | 'ghost';
     type?: 'button' | 'submit' | 'reset';
+    disabled?: boolean;
 };
 /**
  * A reusable button component that supports icons and custom styling
@@ -59,34 +60,39 @@ export const ButtonComponent = ({
     buttonIcon = <IoSyncCircleOutline />,
     iconClassName = '',
     radius,
-    isStartIcon =false,
+    isStartIcon = false,
     textClassName = '',
     isIcon = true,
     baseClassName = '',
     bgColor,
     ButtonVariant = 'light',
+    disabled = false,
     type,
     ...rest
 }: ButtonProps) => {
-	return (
-		<Button
-			// Base styling with NextUI Button component
-			className={cn(
-				' border border-content2-200 rounded-[0.37rem] gap-1 h-[2.5rem] w-[10rem] transition-colors',
-				bgColor
-					? `${bgColor} hover:!${bgColor} data-[hover=true]:!${bgColor}`
-					: 'bg-background hover:!bg-background data-[hover=true]:!bg-background', // Allow custom background color
-				baseClassName, // Allow custom class overrides
-			)}
-			size='sm'
-			radius={radius}
-			variant={ButtonVariant}
-			onPress={handleOnClick}
-			type={type}
-			id={`${id}-button`}
-			{...rest}
-		>
-			{/* Render icon if isIcon is true */}
+    // Check if custom background is provided in baseClassName
+    const hasCustomBg = baseClassName?.includes('bg-') || bgColor;
+
+    return (
+        <Button
+            // Base styling with NextUI Button component
+            className={cn(
+                'border border-content2-200 rounded-[0.37rem] gap-1 h-[2.5rem] w-[10rem] transition-colors',
+                !hasCustomBg && 'bg-background',
+                bgColor,
+                baseClassName
+            )}
+
+            disabled={disabled}
+            size='sm'
+            radius={radius}
+            variant={ButtonVariant}
+            onPress={handleOnClick}
+            type={type}
+            id={`${id}-button`}
+            {...rest}
+        >
+            {/* Render icon if isIcon is true */}
             {isIcon && isStartIcon && (
                 <div
                     className={cn(
@@ -97,15 +103,15 @@ export const ButtonComponent = ({
                     {buttonIcon}
                 </div>
             )}
-			{/* Button text with customizable styling */}
-			<p
-				className={cn(
-					'text-[0.875rem] font-source font-semibold ',
-					textClassName, // Allow custom text styling
-				)}
-			>
-				{buttonText}
-			</p>
+            {/* Button text with customizable styling */}
+            <p
+                className={cn(
+                    'text-[0.875rem] font-source font-semibold ',
+                    textClassName, // Allow custom text styling
+                )}
+            >
+                {buttonText}
+            </p>
             {isIcon && isEndIcon && (
                 <div
                     className={cn(
@@ -116,6 +122,6 @@ export const ButtonComponent = ({
                     {buttonIcon}
                 </div>
             )}
-		</Button>
-	);
+        </Button>
+    );
 };

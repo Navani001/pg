@@ -3,15 +3,16 @@
 import { Button } from "@heroui/react";
 import { useState } from "react";
 
-export default function TermsAndConditions() {
-  const [accepted, setAccepted] = useState(false);
+export default function TermsAndConditions({ onClose, accepted, setAccepted }: { onClose: () => void, accepted?:boolean, setAccepted?:(accepted:boolean)=>void}) {
+  // const [accepted, setAccepted] = useState(false);
 
   const handleContinue = () => {
     if (!accepted) {
       alert("Please agree to the Terms & Conditions first.");
       return;
     }
-    alert("You have accepted the Terms & Conditions.");
+    // alert("You have accepted the Terms & Conditions.");
+    onClose();
   };
 
   return (
@@ -72,7 +73,7 @@ export default function TermsAndConditions() {
             type="checkbox"
             id="agree"
             checked={accepted}
-            onChange={(e) => setAccepted(e.target.checked)}
+            onChange={(e) => setAccepted && setAccepted(e.target.checked)}
             className="mr-2 h-4 w-4 border-gray-300 rounded"
           />
           <label htmlFor="agree" className="text-sm">

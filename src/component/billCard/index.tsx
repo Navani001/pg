@@ -2,7 +2,7 @@ type BillCardProps = {
   title: string;
   amount: string;
   dueDate: string;
-  status: "Pending" | "Paid";
+  status: "PENDING" | "PAID";
   details?: string[];
 };
 
@@ -20,7 +20,7 @@ export default function BillCard({
         <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
         <span
           className={`${
-            status === "Pending" ? "bg-orange-500" : "bg-green-500"
+            status === "PENDING" ? "bg-orange-500" : "bg-green-500"
           } text-white text-xs font-medium px-3 py-1 rounded-full`}
         >
           {status}
