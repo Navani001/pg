@@ -50,6 +50,11 @@ export const Login = () => {
       .catch((error) => {
         console.error("Login request failed:", error);
         setIsLoading(false);
+        setSnackbarData({
+          message:  "Login failed. Please try again.",
+          severity: "error"
+        })
+        setSnackbarOpen(true);
         // Handle network errors or other failures
       });
   };
