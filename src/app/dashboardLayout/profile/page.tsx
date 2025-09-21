@@ -153,9 +153,9 @@ export default function Profile() {
 
             <Input
               isReadOnly
-              value={new Date(formData.dateOfJoining).toLocaleDateString()}
+              value={formData.pgLocation}
               labelPlacement="outside"
-              label="Bed Type"
+              label="PG Location"
               defaultValue="2-Sharing"
               variant="bordered"
               classNames={{
@@ -351,9 +351,9 @@ export default function Profile() {
             <Input
               type="tel"
               labelPlacement="outside"
-              name="alternatePhone"
-              label="Alternate Phone Number"
-              value={formData.alternatePhone}
+              name="advanceAmount"
+              label="Advance Amount"
+              value={formData?.advanceAmount.toString()}
               classNames={{
                 label: "text-base text-gray-900",
               }}

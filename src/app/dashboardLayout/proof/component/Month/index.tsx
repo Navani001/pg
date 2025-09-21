@@ -7,24 +7,24 @@ import { useEffect, useState } from "react";
 import { YearDropDown } from "../yearDrop";
 import { getRequest } from "@/utils";
 import { redirect } from "next/navigation";
-interface MonthProps{
+interface MonthProps {
 
     monthData: any,
-     setMonthData: any,
-      year: string, 
-      setYear: any,
-      selectedMonth: number,
-      setSelectedMonth: any,
-    selectedIndex:number,
-    setSelectedIndex:any
+    setMonthData: any,
+    year: string,
+    setYear: any,
+    selectedMonth: number,
+    setSelectedMonth: any,
+    selectedIndex: number,
+    setSelectedIndex: any
 }
-export function Month({ monthData, setMonthData, year, setYear, selectedMonth ,setSelectedMonth, selectedIndex, setSelectedIndex}:MonthProps) {
-    var months:any = {"January":1, "February":2, "March":3, "April":4, "May":5, "June":6, "July":7, "August":8, "September":9, "October":10, "November":11, "December":12};
+export function Month({ monthData, setMonthData, year, setYear, selectedMonth, setSelectedMonth, selectedIndex, setSelectedIndex }: MonthProps) {
+    var months: any = { "January": 1, "February": 2, "March": 3, "April": 4, "May": 5, "June": 6, "July": 7, "August": 8, "September": 9, "October": 10, "November": 11, "December": 12 };
     const getMonthName = (monthString: string) => {
         return monthString.split(' ')[0];
     };
-        console.log("Month Data:", monthData?.months);
-   
+    console.log("Month Data:", monthData?.months);
+
 
     return (
         <div className="  flex flex-col w-full  gap-3 ">
@@ -34,19 +34,22 @@ export function Month({ monthData, setMonthData, year, setYear, selectedMonth ,s
             </div>
             <div className="w-full grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2   gap-2">
                 {
-                    monthData?.months?.map((month: { 
+                    monthData?.months?.map((month: {
                         month: string,
                         status: string,
                         monthNumber: number
-                    },index:number) => (
+                    }, index: number) => (
                         <MonthCard status={month.status} monthNumber={month.monthNumber}
-                         key={month.month} month={month.month} 
-                            selected={selectedIndex === index } 
+                            key={month.month} month={month.month}
+                            selected={selectedIndex === index}
                             onClick={() => {
-                                setSelectedMonth(months[getMonthName(month.month)]);
+                                const monthName = getMonthName(month.month);
+                                if (months[monthName]) {
+                                    setSelectedMonth(months[monthName]);
+                                }
                                 setSelectedIndex(index);
                             }}
-                            />
+                        />
                     ))
                 }
             </div>

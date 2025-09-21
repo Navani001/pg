@@ -134,7 +134,6 @@ export default function OverView() {
           amount={overView?.billing?.rentAmount}
           dueDate={`$${overView?.currentMonth?.month} ${overView?.currentMonth?.monthName.slice(0,3)} ${overView?.currentMonth?.year}`}
           status={overView?.paymentInfo?.paymentStatus}
-          details={bills[0].details}
         />
         <BillCard
           key={1}
@@ -143,7 +142,6 @@ export default function OverView() {
           // dueDate={bills[1].dueDate}
           dueDate={`$${overView?.currentMonth?.month} ${overView?.currentMonth?.monthName.slice(0, 3)} ${overView?.currentMonth?.year}`}
           status={overView?.paymentInfo?.paymentStatus}
-          details={bills[1].details}
         />
       </div>
 

@@ -5,9 +5,10 @@ import { ButtonComponent } from "../button";
 import { FaFacebookSquare } from "react-icons/fa";
 import { RiWhatsappFill } from "react-icons/ri";
 import { PiInstagramLogoFill } from "react-icons/pi";
+import { useRouter } from "next/navigation";
 export const LandingNavBar = () => {
 
-
+const router=useRouter();
     return (
         <div className="h-[80px] px-5 w-full shadow-md z-20 flex justify-between items-center">
             <div className=" flex gap-4">
@@ -19,14 +20,22 @@ export const LandingNavBar = () => {
 
             </div>
 
-           <div className="flex gap-10 items-center ">
-            <div className="flex gap-5">
-                    <PiInstagramLogoFill className="text-[#FF4B52] text-2xl" />
-                    <FaFacebookSquare className="text-[#FF4B52] text-2xl" />
-                    <RiWhatsappFill className="text-[#FF4B52] text-2xl" />
+            <div className="flex gap-10 items-center ">
+                <div className="flex gap-5">
+                    <PiInstagramLogoFill className="text-[#FF4B52] text-2xl cursor-pointer" />
+                    <FaFacebookSquare className="text-[#FF4B52] text-2xl cursor-pointer" />
+                    <RiWhatsappFill className="text-[#FF4B52] text-2xl cursor-pointer" />
+                </div>
+                <ButtonComponent
+                    isIcon={false}
+                    ButtonVariant="solid"
+                    buttonText="Register"
+                    handleOnClick={() => {
+                        router.push('/login')
+                    }}
+                    baseClassName="rounded-2xl w-auto h-auto py-2 px-10 text-white bg-[#FF4B52] hover:bg-[#e63946] active:bg-[#d62828] border-none"
+                />
             </div>
-                <ButtonComponent isIcon={false} buttonText="Register" baseClassName="bg-[#FF4B52] rounded-2xl w-auto h-auto py-2 px-10 text-white"/>
-           </div>
 
         </div>
     );

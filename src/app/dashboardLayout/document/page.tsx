@@ -28,13 +28,14 @@ export default function Document() {
     name: string;
     size: string;
     file?: File;
+    imageUrl?: string;
   } | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isApproved, setIsApproved] = useState(false)
-  const documentTypes = ["Aadhar Card", "PAN Card", "Passport"];
+  const documentTypes = ["Aadhar Card",];
 
   const loadImageFromUrl = async (imageUrl: string) => {
     try {
@@ -43,7 +44,7 @@ export default function Document() {
 
       // Create a File object
       const file = new File([blob], "downloaded-image.jpg", { type: blob.type });
-
+      console.log(file);
       // Create a DataTransfer to simulate user file selection
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
@@ -66,8 +67,12 @@ export default function Document() {
     }).then((res: any) => {
       if (res && res.success !== false) {
         console.log("Document Proof Response:", res);
-        // loadImageFromUrl(res.data.documentUrl);
-        // setUploadedFile({name:res.data.fileName,size:(res.data.fileSize/1024/1024).toFixed(2)})
+        const imageUrl = "http://localhost:5000" + res.data.documentUrl;
+        setUploadedFile({
+          name: res.data.fileName,
+          size: (res.data.fileSize / 1024 / 1024).toFixed(2),
+          imageUrl: imageUrl
+        });
       }
     })
     getRequest("api/v1/user/digital-signature", {
@@ -108,10 +113,12 @@ export default function Document() {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      const imageUrl = URL.createObjectURL(file);
       setUploadedFile({
         name: file.name,
         size: (file.size / 1024 / 1024).toFixed(2),
         file: file,
+        imageUrl: imageUrl,
       });
     }
   };
@@ -174,9 +181,12 @@ export default function Document() {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file) {
+      const imageUrl = URL.createObjectURL(file);
       setUploadedFile({
         name: file.name,
         size: (file.size / 1024 / 1024).toFixed(2),
+        file: file,
+        imageUrl: imageUrl,
       });
     }
   };
@@ -232,25 +242,69 @@ export default function Document() {
         {/* File Upload Area */}
         <div className="mb-6 font-semibold">
           <div
-            className="border-2 border-dashed rounded-lg px-8 py-4 text-center transition-colors border-gray-900 hover:border-gray-400"
+            className="border-2 border-dashed rounded-lg px-8 py-4 text-center transition-colors border-gray-900 hover:border-gray-400 relative"
             onDragOver={handleDragOver}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
           >
-            <IoMdCloudUpload className="w-12 h-12 text-gray-900 mx-auto mb-3" />
-            <p className="text-gray-900 font-bold text-xl mb-2">
-              Drag & drop your document image here or click to browse
-            </p>
-            <p className="text-gray-900 mb-3">Upload the document image</p>
-            <div className="flex items-center gap-1 md:gap-2 w-full justify-center">
-              <Button onPress={() => fileInputRef.current?.click()} className="bg-red-500 hover:bg-red-600 text-white rounded-full font-medium inline-flex items-center">
-                <IoFolderOutline className="w-4 h-4 font-bold" />
-                <span>Browse File</span>
-              </Button>
-              <p className="text-xs md:text-sm text-gray-900">
-                JPG, PNG, PDF up to 10MB each
-              </p>
-            </div>
+            {uploadedFile && uploadedFile.imageUrl ? (
+              <div className="space-y-4">
+                {/* Image Preview */}
+                <div className="relative">
+                  <img
+                    src={uploadedFile.imageUrl}
+                    alt="Uploaded document preview"
+                    className="max-w-full max-h-64 object-contain rounded-lg border border-gray-300 shadow-sm mx-auto"
+                  />
+                  {/* Overlay for re-upload */}
+                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity rounded-lg">
+                    <div className="text-white text-center">
+                      <IoMdCloudUpload className="w-8 h-8 mx-auto mb-2" />
+                      <p className="font-medium">Click to change document</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* File Info */}
+                <div className="flex items-center justify-center space-x-3 bg-white rounded-lg p-3 border border-green-200">
+                  <FileText className="w-6 h-6 text-green-600" />
+                  <div className="text-center">
+                    <p className="font-medium text-gray-900 text-sm">
+                      {uploadedFile.name}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {uploadedFile.size} MB
+                    </p>
+                  </div>
+                </div>
+
+                {/* Upload New Button */}
+                <Button
+                  onPress={() => fileInputRef.current?.click()}
+                  className="bg-red-500 hover:bg-red-600 text-white rounded-full font-medium inline-flex items-center"
+                >
+                  <IoFolderOutline className="w-4 h-4 font-bold" />
+                  <span>Change Document</span>
+                </Button>
+              </div>
+            ) : (
+              <>
+                <IoMdCloudUpload className="w-12 h-12 text-gray-900 mx-auto mb-3" />
+                <p className="text-gray-900 font-bold text-xl mb-2">
+                  Drag & drop your document image here or click to browse
+                </p>
+                <p className="text-gray-900 mb-3">Upload the document image</p>
+                <div className="flex items-center gap-1 md:gap-2 w-full justify-center">
+                  <Button onPress={() => fileInputRef.current?.click()} className="bg-red-500 hover:bg-red-600 text-white rounded-full font-medium inline-flex items-center">
+                    <IoFolderOutline className="w-4 h-4 font-bold" />
+                    <span>Browse File</span>
+                  </Button>
+                  <p className="text-xs md:text-sm text-gray-900">
+                    JPG, PNG, PDF up to 10MB each
+                  </p>
+                </div>
+              </>
+            )}
           </div>
           <input
             ref={fileInputRef}
@@ -260,28 +314,6 @@ export default function Document() {
             className="hidden"
           />
         </div>
-
-        {uploadedFile && (
-          <div className="flex items-center justify-between bg-white rounded-lg p-4 border border-green-200">
-            <div className="flex items-center space-x-3">
-              <FileText className="w-8 h-8 text-green-600" />
-              <div className="text-left">
-                <p className="font-medium text-gray-900 truncate max-w-xs">
-                  {uploadedFile.name}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Uploaded • {uploadedFile.size} MB
-                </p>
-              </div>
-            </div>
-            {/* <Button
-              variant="bordered"
-              className="px-3 py-1 rounded-md text-sm font-medium"
-            >
-              Ready
-            </Button> */}
-          </div>
-        )}
 
         <Button
           onPress={handleFileSubmit}
