@@ -19,7 +19,6 @@ export default function Request() {
 
   const handleInputChange = (e: any) => {
     const { name, value, type, checked } = e.target;
-    console.log(name, value, type, checked);
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
@@ -32,17 +31,12 @@ export default function Request() {
     const token = localStorage.getItem("token");
     if (formData.confirmTerms && formData.leaveDate) {
       
-      console.log({
-        feedback: formData.feedback,
-        reason: formData.reason,
-        requestedLeaveDate: formattedDate, // This will be in YYYY-MM-DD format
-      })
+      
       postRequest(`api/v1/user/leaving-requests/apply`, {
         feedback: formData.feedback,
         reason: formData.reason,
         requestedLeaveDate: formattedDate, // This will be in YYYY-MM-DD format
       }, { authorization: `Bearer ${token}` }).then((res) => {
-        console.log("Leave request response:", res);
       }).catch((err) => {
         console.error("Error submitting leave request:", err);
       });
@@ -99,7 +93,6 @@ export default function Request() {
               variant="bordered"
               value={formData.leaveDate}
               onChange={(date) => {
-                console.log(date);
                 setFormData((prev) => ({ ...prev, leaveDate: date }));
               }}
               labelPlacement="outside"

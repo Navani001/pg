@@ -32,7 +32,6 @@ export function PaymentDropDown() {
                 selectionMode="single"
                 selectedKeys={new Set([payment])}
                 onSelectionChange={(keys) => {
-                    console.log("Selected payment:", keys);
                     const selectedKey = Array.from(keys)[0] as string;
                     setPayment(selectedKey);
                 }}

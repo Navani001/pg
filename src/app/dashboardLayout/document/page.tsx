@@ -44,7 +44,7 @@ export default function Document() {
 
       // Create a File object
       const file = new File([blob], "downloaded-image.jpg", { type: blob.type });
-      console.log(file);
+     
       // Create a DataTransfer to simulate user file selection
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
@@ -66,20 +66,18 @@ export default function Document() {
       authorization: `Bearer ${token}`
     }).then((res: any) => {
       if (res && res.success !== false) {
-        console.log("Document Proof Response:", res);
         const imageUrl = "http://localhost:5000" + res.data.documentUrl;
-        setUploadedFile({
-          name: res.data.fileName,
-          size: (res.data.fileSize / 1024 / 1024).toFixed(2),
-          imageUrl: imageUrl
-        });
+        // setUploadedFile({
+        //   name: res.data.fileName,
+        //   size: (res.data.fileSize / 1024 / 1024).toFixed(2),
+        //   imageUrl: imageUrl
+        // });
       }
     })
     getRequest("api/v1/user/digital-signature", {
       authorization: `Bearer ${token}`
     }).then((res: any) => {
       if (res && res.success !== false) {
-        console.log("Document Proof Response:", res);
 
         // setUploadedFile({name:res.data.fileName,size:(res.data.fileSize/1024/1024).toFixed(2)})
       }
@@ -102,7 +100,6 @@ export default function Document() {
       authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
     }).then((res: any) => {
-      console.log("Upload Response:", res);
       if (res && res.success !== false) {
         alert("Document uploaded successfully!");
       } else {
@@ -157,14 +154,12 @@ export default function Document() {
     // Use FormData for file upload
     const formData = new FormData();
     formData.append('documentProof', signatureFile);
-    console.log(`Signature file size: ${(signatureFile.size / 1024 / 1024).toFixed(2)} MB`);
     const token = localStorage.getItem("token");
 
     putRequest(`api/v1/user/digital-signature`, formData, {
       authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
     }).then((res: any) => {
-      console.log("Upload Response:", res);
       if (res && res.success !== false) {
         alert("Document uploaded successfully!");
       } else {

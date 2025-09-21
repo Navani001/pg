@@ -47,7 +47,7 @@ export default function Profile() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     getRequest(`api/v1/user/profile`, { authorization: `Bearer ${token}` }).then((res: any) => {
-      console.log("Overview Response:", res);
+     
       if (res && res.success !== false) {
         setFormData((prev) => ({
           ...prev,
@@ -75,7 +75,6 @@ export default function Profile() {
   
   const handleInputChange = (e: { target: { name: any; value: any } }) => {
     const { name, value } = e.target;
-    console.log("Input Change:", name, value);
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -83,7 +82,6 @@ export default function Profile() {
   };
 
   const handleUpdateDetails = () => {
-    console.log("Updating personal details:", formData);
     const token = localStorage.getItem("token");
 
     putRequest(`api/v1/user/profile`,{
