@@ -1,4 +1,5 @@
 "use client";
+import { SnackBar } from "@/component";
 import { formatCalendarDateToISO, postRequest } from "@/utils";
 import { Button, DatePicker, Input, Textarea } from "@heroui/react";
 import { CalendarDate } from "@internationalized/date";
@@ -9,11 +10,18 @@ import { useState } from "react";
 export default function Request() {
   const [formData, setFormData] = useState({
     leaveDate: null as CalendarDate | null,
-    reason: "Job transfer",
-    feedback: "",
+    reason: "",
+    feedback: "Nothing",
     confirmTerms: false,
   });
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackBarData, setSnackbarData] = useState<{
+    message: string;
+    severity: "success" | "error" | "info" | "warning";
+  }>({
+    message: "",
+    severity: "success",
+  });
   const handleSnackbarClose = () => setSnackbarOpen(false);
 
 
@@ -27,20 +35,36 @@ export default function Request() {
 
   const handleSubmit = () => {
     const formattedDate = formatCalendarDateToISO(formData.leaveDate);
-    setSnackbarOpen(true);
-    const token = localStorage.getItem("token");
-    if (formData.confirmTerms && formData.leaveDate) {
-      
-      
-      postRequest(`api/v1/user/leaving-requests/apply`, {
-        feedback: formData.feedback,
-        reason: formData.reason,
-        requestedLeaveDate: formattedDate, // This will be in YYYY-MM-DD format
-      }, { authorization: `Bearer ${token}` }).then((res) => {
-      }).catch((err) => {
-        console.error("Error submitting leave request:", err);
+    
+    if (!formData.leaveDate || !formData.confirmTerms) {
+      setSnackbarOpen(true);
+      setSnackbarData({
+        message: "Please select a leave date and confirm terms & conditions.",
+        severity: "error"
       });
+      return;
     }
+    const token = localStorage.getItem("token");
+
+
+    postRequest(`api/v1/user/leaving-requests/apply`, {
+      feedback: formData.feedback,
+      reason: formData.reason,
+      requestedLeaveDate: formattedDate, // This will be in YYYY-MM-DD format
+    }, { authorization: `Bearer ${token}` }).then((res) => {
+      setSnackbarOpen(true);
+      setSnackbarData({
+        message: "Your leave request has been submitted successfully and is under review by the admin. You will be contacted shortly for the checkout process.",
+        severity: "success"
+      });
+    }).catch((err) => {
+      console.error("Error submitting leave request:", err);
+      setSnackbarOpen(true);
+      setSnackbarData({
+        message: "Error submitting leave request. Please try again.",
+        severity: "error"
+      });
+    });
   };
 
   // const reasonOptions = [
@@ -54,6 +78,13 @@ export default function Request() {
 
   return (
     <div className="h-full p-4 md:p-6 w-full overflow-y-scroll scrollbar-hide">
+      <SnackBar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        message={snackBarData.message}
+        severity={snackBarData.severity}
+        autoHideDuration={4000}
+      />
       <h1 className="text-2xl font-bold text-gray-900 mb-2">
         Releave Request Details
       </h1>
@@ -197,34 +228,7 @@ export default function Request() {
         </div>
       </div>
 
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={4000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <MuiAlert
-          onClose={handleSnackbarClose}
-          severity="success"
-          icon={
-            <Check className="w-5 h-5 bg-white/30 text-white rounded-full" />
-          }
-          sx={{
-            bgcolor: "#22c55e",
-            color: "#fff",
-            fontSize: "1rem",
-            borderRadius: "8px",
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            maxWidth: "95%",
-            boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-          }}
-        >
-          Your leave request has been submitted successfully and is under review
-          by the admin. You will be contacted shortly for the checkout process.
-        </MuiAlert>
-      </Snackbar>
+    
     </div>
   );
 }
