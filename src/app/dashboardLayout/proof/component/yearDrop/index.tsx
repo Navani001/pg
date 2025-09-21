@@ -1,11 +1,10 @@
 import { ButtonComponent } from "@/component";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
-import { useState } from "react";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react";
 import { SlCalender } from "react-icons/sl";
 
 export function YearDropDown({ joinYear, year, setYear }: { joinYear: number, year: string, setYear: (year: string) => void }) {
     const currentYear = new Date().getFullYear();
-    
+
     // Generate years from joinYear to current year
     const generateYears = () => {
         const years: { key: string, label: string }[] = [];

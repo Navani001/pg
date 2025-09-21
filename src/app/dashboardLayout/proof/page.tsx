@@ -1,22 +1,19 @@
 "use client"
-import { ButtonComponent, Modals, Sidebar } from "@/component";
+import { ButtonComponent, SnackBar } from "@/component";
+import { Chip } from "@/component/chip";
+import { InputField } from "@/component/input";
+import { getRequest, postRequest } from "@/utils";
+import { Button, Checkbox, Modal, ModalBody, ModalContent, ModalHeader, Select, SelectItem, Spinner } from "@heroui/react";
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
+import { HiOutlineExclamationTriangle } from "react-icons/hi2";
+import { IoMdCloseCircleOutline } from "react-icons/io";
+import { RxCrossCircled } from "react-icons/rx";
 import { Month } from "./component/Month";
 import { DetailProof } from "./component/details";
+import { ModelContent } from "./component/modelContent";
 import { NoteProof } from "./component/note";
 import { PayMentScreenShoot } from "./component/paymentScreenShot";
-import { InputField } from "@/component/input";
-import { MdPayment } from "react-icons/md";
-import { PaymentDropDown } from "./component/payment";
-import { IoMdCloseCircleOutline, IoMdEye } from "react-icons/io";
-import { Chip } from "@/component/chip";
-import { useEffect, useState } from "react";
-import { ModelContent } from "./component/modelContent";
-import { Button, Checkbox, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Spinner } from "@heroui/react";
-import { getRequest, postRequest } from "@/utils";
-import { redirect } from "next/navigation";
-import { HiOutlineExclamationTriangle } from "react-icons/hi2";
-import { RxCrossCircled } from "react-icons/rx";
-
 
 interface UploadedFile {
     name: string;
@@ -42,12 +39,18 @@ export default function page() {
     const [uploadedElectFile, setUploadedElectFile] = useState<UploadedFile | null>(null);
     const [amount, setAmount] = useState<string>()
     const [year, setYear] = useState<string>(new Date().getFullYear().toString())
-    const currentMonth = new Date().getMonth().toString();
     const [selectedMonth, setSelectedMonth] = useState<any>()
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-    console.log("Current Month:", currentMonth);
-
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackBarData, setSnackbarData] = useState<
+    {
+        message: string,
+        severity:'success' | 'error' | 'info' | 'warning'
+    }>({
+        message:"test",
+        severity:"success"
+    });
     // Add safety check for monthData and selectedIndex
     useEffect(() => {
         if (monthData?.months && monthData.months.length > 0 && selectedIndex < monthData.months.length) {
@@ -80,14 +83,19 @@ export default function page() {
 
     }, [year])
     const handleSubmit = () => {
-        if (!amount) {
-            alert("Please enter the amount");
-            return;
-        }
+       
         const token = localStorage.getItem("token");
         setIsSubmitting(true);
         if (paymentMethod === "ONLINE") {
-
+            if (!uploadedFile || !uploadedElectFile || !amount || !selectedMonth || !year) {
+                setSnackbarData({
+                    message: "Please fill all the required fields.",
+                    severity: "error"
+                })
+                setSnackbarOpen(true);
+                setIsSubmitting(false);
+                return
+            }
 
             const formData = new FormData();
             formData.append("amount", amount);
@@ -109,17 +117,21 @@ export default function page() {
             };
             // Remove Content-Type to let browser set it automatically for FormData
             delete (headers as any)['Content-Type'];
-
             postRequest(`api/v1/user/payments/upload/online`, formData, headers)
                 .then((res: any) => {
                     if (res.success) {
-                        alert("Upload successful!");
+                        setSnackbarOpen(true);
+                        setSnackbarData({
+                            message: "form is successfully submitted",
+                            severity: "success"
+                        })
                         // Refresh page or update state
                     }
                 })
                 .catch((error: any) => {
                     console.error("Upload Error:", error);
                     if (error.response?.data) {
+                        
                         console.error("Error details:", error.response.data);
                     }
                 })
@@ -130,6 +142,15 @@ export default function page() {
         }
         else if (paymentMethod === "CASH") {
             const formData = new FormData();
+            if ( !amount || !selectedMonth || !year) {
+                setSnackbarData({
+                    message: "Please fill all the required fields.",
+                    severity: "error"
+                })
+                setSnackbarOpen(true);
+                setIsSubmitting(false);
+                return
+            }
             formData.append("amount", amount);
             formData.append("month", selectedMonth);
             formData.append("year", year);
@@ -146,7 +167,12 @@ export default function page() {
             }, headers)
                 .then((res: any) => {
                     if (res.success) {
-                        alert("Upload successful!");
+                      
+                        setSnackbarOpen(true);
+                        setSnackbarData({
+                            message: "form is successfully submitted",
+                            severity: "success"
+                        })
                         // Refresh page or update state
                     }
                 })
@@ -163,8 +189,18 @@ export default function page() {
         }
 
     }
+    const handleSnackbarClose = () => {
+        setSnackbarOpen(false);
+    }
     return (
         <div className="h-full w-full flex gap-3 flex-col p-4 md:p-6 ">
+            <SnackBar
+                open={snackbarOpen}
+                onClose={handleSnackbarClose}
+                message={snackBarData.message}
+                severity={snackBarData.severity}
+                autoHideDuration={4000}
+            />
             <Modal isOpen={openModel} size={"2xl"} hideCloseButton onClose={() => setOpenModel(false)}>
                 <ModalContent>
                     {(onClose) => (
@@ -397,6 +433,7 @@ export default function page() {
                     }
                 </>
             )}
+            
             {/* <Modals size={"lg"} width="1029px" hideCloseButton ModalContents={<ModelContent/>} isopen={openModel} onClose={() => setOpenModel(false)} /> */}
 
         </div>

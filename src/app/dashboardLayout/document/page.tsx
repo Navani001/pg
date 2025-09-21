@@ -1,6 +1,6 @@
 "use client";
 
-import { SignaturePad } from "@/component";
+import { SignaturePad, SnackBar } from "@/component";
 import TermsAndConditions from "@/component/terms&conditions";
 import { getRequest, putRequest } from "@/utils";
 import {
@@ -18,9 +18,7 @@ import { IoFolderOutline } from "react-icons/io5";
 import { MdOutlineInfo } from "react-icons/md";
 import SignatureCanvas from "react-signature-canvas";
 
-import CloseIcon from "@mui/icons-material/Close";
 import MuiAlert from "@mui/material/Alert";
-import IconButton from "@mui/material/IconButton";
 import Snackbar from "@mui/material/Snackbar";
 
 export default function Document() {
@@ -36,7 +34,14 @@ export default function Document() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isApproved, setIsApproved] = useState(false)
   const documentTypes = ["Aadhar Card",];
-
+  const [snackBarData, setSnackbarData] = useState<
+    {
+      message: string,
+      severity: 'success' | 'error' | 'info' | 'warning'
+    }>({
+      message: "test",
+      severity: "success"
+    })
   const loadImageFromUrl = async (imageUrl: string) => {
     try {
       const response = await fetch(imageUrl);
@@ -86,24 +91,44 @@ export default function Document() {
   const handleFileSubmit = () => {
     setSnackbarOpen(true);
 
-    // if (!isApproved) {
-    //   alert("Please agree to the Terms & Conditions first.");
-    //   return;
-    // }
+    if (!isApproved) {
+      setSnackbarOpen(true);
+      setSnackbarData({
+        message: "Please agree to the Terms & Conditions first.",
+        severity: "error"
+      });
+      return;
+    }
+    if(!uploadedFile?.file){
+      setSnackbarOpen(true);
+      setSnackbarData({
+        message: "Please upload a document.",
+        severity: "error"
+      });
+      return;
+    }
 
     // Use FormData for file upload
     const formData = new FormData();
     formData.append('documentProof', uploadedFile?.file as Blob);
     const token = localStorage.getItem("token");
-
+    
     putRequest(`api/v1/user/document-proof`, formData, {
       authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
     }).then((res: any) => {
       if (res && res.success !== false) {
-        alert("Document uploaded successfully!");
+        setSnackbarOpen(true);
+        setSnackbarData({
+          message: "Document uploaded successfully!",
+          severity: "success"
+        });
       } else {
-        alert("Failed to upload document.");
+        setSnackbarOpen(true);
+        setSnackbarData({
+          message: "Failed to upload document.",
+          severity: "error"
+        });
       }
     });
   };
@@ -138,7 +163,7 @@ export default function Document() {
     return new File([blob], filename, { type: blob.type });
   };
   const handleSubmit = () => {
-    setSnackbarOpen(true);
+   
 
     // if (!isApproved) {
     //   alert("Please agree to the Terms & Conditions first.");
@@ -153,18 +178,47 @@ export default function Document() {
 
     // Use FormData for file upload
     const formData = new FormData();
-    formData.append('documentProof', signatureFile);
+    formData.append('digitalSignature', signatureFile);
     const token = localStorage.getItem("token");
-
+    if (!isApproved) {
+      setSnackbarOpen(true);
+      setSnackbarData({
+        message: "Please agree to the Terms & Conditions first.",
+        severity: "error"
+      });
+      return;
+    }
+    if (!signatureFile) {
+      setSnackbarOpen(true);
+      setSnackbarData({
+        message: "Please upload a document.",
+        severity: "error"
+      });
+      return;
+    }
     putRequest(`api/v1/user/digital-signature`, formData, {
       authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
     }).then((res: any) => {
       if (res && res.success !== false) {
-        alert("Document uploaded successfully!");
+        setSnackbarOpen(true);
+        setSnackbarData({
+          message: "Document uploaded successfully!",
+          severity: "success"
+        });
       } else {
-        alert("Failed to upload document.");
+        setSnackbarOpen(true);
+        setSnackbarData({
+          message: "Failed to upload document.",
+          severity: "error"
+        });
       }
+    }).catch((err) => {
+      setSnackbarOpen(true);
+      setSnackbarData({
+        message: "Failed to upload document.",
+        severity: "error"
+      });
     });
   };
 
@@ -192,6 +246,13 @@ export default function Document() {
 
   return (
     <div className="h-full p-4 md:p-6 w-full overflow-y-scroll scrollbar-hide">
+       <SnackBar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        message={snackBarData.message}
+        severity={snackBarData.severity}
+        autoHideDuration={4000}
+      />
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">
           Upload Your Documents
@@ -346,32 +407,7 @@ export default function Document() {
       </div>
 
       {/* MUI Snackbar */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={4000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <MuiAlert
-          onClose={handleSnackbarClose}
-          severity="success"
-          icon={<Check className="w-5 h-5 bg-white/30 text-white rounded-full" />}
-          sx={{
-            bgcolor: "#22c55e",
-            color: "#fff",
-            fontSize: "1rem",
-            borderRadius: "8px",
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            maxWidth: "95%",
-            boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-          }}
-        >
-          Your leave request has been submitted successfully and is under review
-          by the admin. You will be contacted shortly for the checkout process.
-        </MuiAlert>
-      </Snackbar>
+    
 
       {/* Terms & Conditions Modal */}
       <Modal isOpen={isOpen} onClose={onClose} size="2xl">
