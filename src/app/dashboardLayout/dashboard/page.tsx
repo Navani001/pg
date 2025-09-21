@@ -73,7 +73,7 @@ export default function OverView() {
   useEffect(() => {
     const storedToken = localStorage?.getItem("token");
     getRequest("api/v1/user/current-month-overview",{authorization: `Bearer ${storedToken}`}).then((res:any) => {
-      console.log("Overview Response:", res);
+      
       if (res && res.success !== false){
         setOverView(res.data)
       }else{
@@ -81,7 +81,7 @@ export default function OverView() {
       }
     });
     getRequest("api/v1/user/payments/history", { authorization: `Bearer ${storedToken}` }).then((res: any) => {
-      console.log("Overview Response:", res);
+     
       if (res && res.success !== false) {
         setPaymentsData(res.data.payments)
       } else {

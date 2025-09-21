@@ -38,7 +38,7 @@ export const SignaturePad = ({ sigCanvas }: { sigCanvas: RefObject<SignatureCanv
   useEffect(()=>{
     const token = localStorage.getItem("token");
     getRequest(`api/v1/user/document-proof`, { authorization: `Bearer ${token}` }).then((res: any) => {
-        console.log("Overview Response:", res);
+      
         if (res && res.success !== false) {
           // sigCanvas.current?.fromDataURL(res.data.documentUrl || "");
           if (res.data.documentUrl) {
@@ -55,7 +55,6 @@ export const SignaturePad = ({ sigCanvas }: { sigCanvas: RefObject<SignatureCanv
 
   const save = () => {
     const dataUrl = sigCanvas.current?.toDataURL(); // base64 PNG
-    console.log("Signature Data URL:", dataUrl);
     alert("Signature saved! Check console.");
   };
 

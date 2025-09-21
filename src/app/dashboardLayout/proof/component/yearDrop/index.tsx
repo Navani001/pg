@@ -37,7 +37,6 @@ export function YearDropDown({ joinYear, year, setYear }: { joinYear: number, ye
                 selectionMode="single"
                 selectedKeys={new Set([year])}
                 onSelectionChange={(keys) => {
-                    console.log("Selected year:", keys);
                     const selectedKey = Array.from(keys)[0] as string;
                     setYear(selectedKey);
                 }}

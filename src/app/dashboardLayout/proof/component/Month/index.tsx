@@ -23,7 +23,6 @@ export function Month({ monthData, setMonthData, year, setYear, selectedMonth, s
     const getMonthName = (monthString: string) => {
         return monthString.split(' ')[0];
     };
-    console.log("Month Data:", monthData?.months);
 
 
     return (

@@ -1,6 +1,5 @@
 
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
-console.log(process.env.NEXT_PUBLIC_BASE_URL )
 // Create an Axios instance
 const axiosClient = axios.create({
     baseURL:  "http://localhost:5000/",// Replace with your API URL
@@ -15,7 +14,6 @@ const axiosClient = axios.create({
 //  **Response Interceptor**
 axiosClient.interceptors.response.use(
     <T>(response: AxiosResponse<T>): T => {
-        console.log("Response Received:", response);
         return response.data; // Directly return the data instead of full response
     },
     (error) => {
@@ -41,9 +39,7 @@ export async function postRequest<T>(
     payload?: object,
     headers = {},
 ) {
-    console.log("Making POST request to:", `http://localhost:5000/${URL}`);
-    console.log("Payload:", payload);
-    console.log("Headers:", headers);
+    
 
     const response = await axiosClient.post<T>(URL, payload, {
         // withCredentials: true, // Temporarily disabled for CORS testing
