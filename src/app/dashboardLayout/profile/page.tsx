@@ -44,6 +44,7 @@ export default function Profile() {
       return null;
     }
   };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     getRequest(`api/v1/user/profile`, { authorization: `Bearer ${token}` }).then((res: any) => {

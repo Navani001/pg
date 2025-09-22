@@ -9,7 +9,7 @@ export default async function Home() {
     </div>
     <div className="h-full w-full flex">
 
-      <div className="h-full w-full lg:w-5/6 overflow-y-scroll scrollbar-hide">
+      <div className="h-full w-full overflow-y-scroll scrollbar-hide">
         <Landing />
       </div>
     </div>

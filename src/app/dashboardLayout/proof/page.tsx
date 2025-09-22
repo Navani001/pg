@@ -39,10 +39,11 @@ export default function page() {
     const [uploadedElectFile, setUploadedElectFile] = useState<UploadedFile | null>(null);
     const [amount, setAmount] = useState<string>()
     const [year, setYear] = useState<string>(new Date().getFullYear().toString())
-    const [selectedMonth, setSelectedMonth] = useState<any>()
+    const [selectedMonth, setSelectedMonth] = useState<any>(9)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
     const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [monthAmount, setMonthAmount] = useState<string>()
     const [snackBarData, setSnackbarData] = useState<
     {
         message: string,
@@ -54,10 +55,33 @@ export default function page() {
     // Add safety check for monthData and selectedIndex
     useEffect(() => {
         if (monthData?.months && monthData.months.length > 0 && selectedIndex < monthData.months.length) {
-            setStatus(monthData.months[selectedIndex].status);
+         
             setSelectedMonth(monthData.months[selectedIndex].monthNumber);
         }
     }, [selectedIndex, monthData])
+    useEffect(() => { 
+        const token = localStorage.getItem("token");
+        console.log(`/api/v1/user/payments/${selectedMonth}/${year}`)
+        getRequest(`/api/v1/user/payments/${selectedMonth}/${year}`, {
+            authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+
+        }).then((res: any) => {
+            if (res && res.success !== false) {
+                
+              console.log("Payment Data:", res);
+                setStatus(res.data.paymentStatus);
+                setMonthAmount(res.data.amount)
+            } else {
+                redirect('/login')
+            }
+        }).catch((error: any) => {
+            console.error("Error fetching payment data:", error);
+        }).finally(() => {
+            setIsLoading(false);
+        });
+
+    }, [selectedMonth])
     useEffect(() => {
         const token = localStorage.getItem("token");
         setIsLoading(true);
@@ -231,8 +255,8 @@ export default function page() {
                     <Month monthData={monthData} setMonthData={setMonthData} year={year} setYear={setYear} selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
                     <div className="mb-4"></div>
 
-                    <DetailProof header="Proof Details" month={monthData && monthData?.months && monthData?.months.length > 0 && monthData?.months[selectedIndex] ? `${monthData?.months[selectedIndex]?.month} ${year}` : ""} status={status} amount="$ 2,430" />
-                    {status === "Pending" &&
+                    <DetailProof header="Proof Details" month={monthData && monthData?.months && monthData?.months.length > 0 && monthData?.months[selectedIndex] ? `${monthData?.months[selectedIndex]?.month} ${year}` : ""} status={status} amount={`₹${monthAmount}`} />
+                    {status === "PENDING" &&
                         <div className="flex flex-col">
                             <span className="font-semibold">Amount</span>
                             <p>Enter your rent / fee amount below and click submit</p>
@@ -266,7 +290,7 @@ export default function page() {
 
                         </div>
                     }
-                    {status === "Pending" && (
+                    {status === "PENDING" && (
                         <div className="border px-5 py-3 rounded-lg">
                             <div className="border py-1 border-gray-300 w-full shadow-sm overflow-hidden rounded-lg px-4 flex justify-between items-center">
                                 <Checkbox radius="full" color="success" isSelected={paymentMethod === "ONLINE"} onChange={() => setPaymentMethod("ONLINE")} isDisabled={isSubmitting || isLoading}></Checkbox>
@@ -356,7 +380,7 @@ export default function page() {
                 </div>
             } */}
                     {
-                        status === "Pending" &&
+                        status === "PENDING" &&
 
                         <div className="my-2 max-w-sm">
                             <NoteProof content="Make sure your screenshot is clear
@@ -366,7 +390,7 @@ export default function page() {
 
                         </div>
                     }
-                    {status === "rejection" && (
+                    {status === "REJECTED" && (
                         <div className="space-y-2">
                             <div className="flex items-center my-1 gap-3 shadow-md bg-orange-500 border-0 border-orange-600 text-gray-900 px-4 py-3 rounded-lg">
                                 <HiOutlineExclamationTriangle className="text-xl font-bold" />
@@ -405,7 +429,7 @@ export default function page() {
                         </div>
                     )}
                     {
-                        status === "upload" &&
+                        status === "PAID" &&
                         <div className="grid md:grid-cols-5 justify-between w-full gap-3 mt-3">
                             <div className="border md:col-span-3 rounded-lg p-2 flex flex-col gap-2">
                                 <div className="flex justify-between items-center">

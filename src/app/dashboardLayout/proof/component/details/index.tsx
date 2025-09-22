@@ -17,7 +17,7 @@ export function DetailProof(props: DetailProofProps) {
         switch (status) {
             case "Pending":
                 return { className: "bg-primary text-white", text: "pending" };
-            case "upload":
+            case "PAID":
                 return { className: "bg-success text-white", text: "upload" };
             default:
                 return { className: "", text: "" };
