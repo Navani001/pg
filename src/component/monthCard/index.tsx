@@ -27,9 +27,9 @@ props:MonthCardProps) => {
     const label:LabelType = (() => {
         switch(status){
             case "Pending": 
-                return {className:"bg-primary text-white",text:"pending"};
+                return {className:"bg-primary text-white",text:"Pending"};
             case "upload": 
-                return {className:"bg-success text-white",text:"upload"};
+                return {className:"bg-success text-white",text:"Upload"};
             default: 
                 return {className:"",text:""};
         }

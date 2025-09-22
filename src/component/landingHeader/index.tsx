@@ -16,12 +16,12 @@ const router=useRouter();
                 <Image src="/logo.png" radius="full" loading="eager" width={50} height={50} classNames={{
                     "img": " object-cover "
                 }} alt="Logo" />
-                <div className="font-bold text-lg font-poppins flex items-center justify-center">MRM PG</div>
+                <div className="font-bold text-lg font-poppins items-center justify-center hidden sm:flex">MRM PG</div>
 
             </div>
 
-            <div className="flex gap-10 items-center ">
-                <div className="flex gap-5">
+            <div className="flex gap-2 sm:gap-10 items-center ">
+                <div className="flex gap-2 sm:gap-5">
                     <PiInstagramLogoFill className="text-[#FF4B52] text-2xl cursor-pointer" />
                     <FaFacebookSquare className="text-[#FF4B52] text-2xl cursor-pointer" />
                     <RiWhatsappFill className="text-[#FF4B52] text-2xl cursor-pointer" />
@@ -33,7 +33,7 @@ const router=useRouter();
                     handleOnClick={() => {
                         router.push('/login')
                     }}
-                    baseClassName="rounded-2xl w-auto h-auto py-2 px-10 text-white bg-[#FF4B52] hover:bg-[#e63946] active:bg-[#d62828] border-none"
+                    baseClassName="rounded-2xl w-auto h-auto py-2 px-2 sm:px-10 text-white bg-[#FF4B52] hover:bg-[#e63946] active:bg-[#d62828] border-none"
                 />
             </div>
 

@@ -32,7 +32,7 @@ export const Login = () => {
           // Redirect to dashboard on success
           localStorage.setItem("token", res.data.token);
 
-          router.push("/dashboardLayout/dashboard");
+          router.push("/user/dashboard");
           setSnackbarData({
             message: "Login successful!",
             severity: "success"

@@ -15,10 +15,12 @@ export function DetailProof(props: DetailProofProps) {
     const { header, month, status, amount } = props
     const label: LabelType = (() => {
         switch (status) {
-            case "Pending":
-                return { className: "bg-primary text-white", text: "pending" };
-            case "upload":
-                return { className: "bg-success text-white", text: "upload" };
+            case "PENDING":
+                return { className: "bg-primary text-white", text: "Pending" };
+            case "PAID":
+                return { className: "bg-success text-white", text: "Upload" };
+            case "REJECTED":
+                return { className: "bg-primary text-white", text: "Rejected" };
             default:
                 return { className: "", text: "" };
         }

@@ -13,25 +13,25 @@ export const Sidebar = () => {
   const pathname = usePathname();
 
   const links = [
-    { name: "Overview", href: "/dashboardLayout/dashboard", icon: GoGraph },
+    { name: "Overview", href: "/user/dashboard", icon: GoGraph },
     {
       name: "Document",
-      href: "/dashboardLayout/document",
+      href: "/user/document",
       icon: IoDocumentText,
     },
     {
       name: "Proof",
-      href: "/dashboardLayout/proof",
+      href: "/user/proof",
       icon: IoIosDocument,
     },
     {
       name: "Profile Details",
-      href: "/dashboardLayout/profile",
+      href: "/user/profile",
       icon: FaUserCircle,
     },
     {
       name: "Request form",
-      href: "/dashboardLayout/request",
+      href: "/user/request",
       icon: BsFillQuestionCircleFill,
     },
   ];

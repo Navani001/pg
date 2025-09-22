@@ -47,14 +47,14 @@ export function PayMentScreenShoot(props: PayMentScreenShootProps) {
                 />
             </div>
             <div className="h-full flex flex-col">
-                <p className="font-poppins font-semibold text-lg">{uploadedFile ? uploadedFile.name : "No file Selected"}
+                <p className="font-poppins font-semibold text-lg truncate w-36 sm:w-auto">{uploadedFile ? uploadedFile.name : "No file Selected"}
                 </p>
                 <p>Allowed formats: JPG, PNG, PDF
                 </p>
                 <p>(Max size:  5MB)
                 </p>
             </div>
-            <div className=" flex items-center"><Button
+            <div className=" items-center hidden sm:flex"><Button
                 onPress={() => fileInputRef.current?.click()}
                 className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 w-auto h-auto rounded-lg font-medium transition-colors inline-flex items-center "
             >
