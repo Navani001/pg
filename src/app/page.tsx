@@ -5,11 +5,9 @@ export default async function Home() {
   return <div className="h-[100dvh] w-[100dvw] overflow-hidden">
     <div className="h-[10%] w-full">
       <LandingNavBar />
-      {/* <LandingNavBar/> */}
     </div>
-    <div className="h-full w-full flex">
-
-      <div className="h-full w-full overflow-y-scroll scrollbar-hide">
+    <div className="h-[90%] w-full">
+      <div className="h-full w-full  overflow-y-scroll scrollbar-hide">
         <Landing />
       </div>
     </div>

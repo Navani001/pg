@@ -255,7 +255,7 @@ export default function page() {
                     <Month monthData={monthData} setMonthData={setMonthData} year={year} setYear={setYear} selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
                     <div className="mb-4"></div>
 
-                    <DetailProof header="Proof Details" month={monthData && monthData?.months && monthData?.months.length > 0 && monthData?.months[selectedIndex] ? `${monthData?.months[selectedIndex]?.month} ${year}` : ""} status={status} amount={`₹${monthAmount}`} />
+                    <DetailProof header="Proof Details" month={monthData && monthData?.months && monthData?.months.length > 0 && monthData?.months[selectedIndex] ? `${monthData?.months[selectedIndex]?.month}` : ""} status={status} amount={`₹${monthAmount}`} />
                     {status === "PENDING" &&
                         <div className="flex flex-col">
                             <span className="font-semibold">Amount</span>

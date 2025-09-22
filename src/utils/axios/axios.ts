@@ -2,7 +2,7 @@
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 // Create an Axios instance
 const axiosClient = axios.create({
-    baseURL:  "http://localhost:5000/",// Replace with your API URL
+    baseURL:  process.env.NEXT_PUBLIC_Backend_URL || "http://localhost:5000/",// Replace with your API URL
     headers: {
         // Authorization: `Bearer ${auth()?.token || ""}`, // Use auth token if available
     },

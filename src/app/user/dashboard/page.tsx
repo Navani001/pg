@@ -109,7 +109,7 @@ export default function OverView() {
           }
         />
         <Button onPress={() => {
-          router.push('/dashboardLayout/proof')
+          router.push('/user/proof')
         }} className="bg-red-500 hover:bg-red-600 flex items-center gap-1 text-white py-2 rounded-lg font-medium transition-colors">
           <TbCalendarDot />
           Pay Now
