@@ -29,7 +29,7 @@ const router=useRouter();
                 <ButtonComponent
                     isIcon={false}
                     ButtonVariant="solid"
-                    buttonText="Register"
+                    buttonText="Login"
                     handleOnClick={() => {
                         router.push('/login')
                     }}
