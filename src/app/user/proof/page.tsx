@@ -44,22 +44,23 @@ export default function page() {
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [monthAmount, setMonthAmount] = useState<string>()
+    const [selectedPayment, setSelectedPayment] = useState("ONLINE")
     const [snackBarData, setSnackbarData] = useState<
-    {
-        message: string,
-        severity:'success' | 'error' | 'info' | 'warning'
-    }>({
-        message:"test",
-        severity:"success"
-    });
+        {
+            message: string,
+            severity: 'success' | 'error' | 'info' | 'warning'
+        }>({
+            message: "test",
+            severity: "success"
+        });
     // Add safety check for monthData and selectedIndex
     useEffect(() => {
         if (monthData?.months && monthData.months.length > 0 && selectedIndex < monthData.months.length) {
-         
+
             setSelectedMonth(monthData.months[selectedIndex].monthNumber);
         }
     }, [selectedIndex, monthData])
-    useEffect(() => { 
+    useEffect(() => {
         const token = localStorage.getItem("token");
         console.log(`/api/v1/user/payments/${selectedMonth}/${year}`)
         getRequest(`/api/v1/user/payments/${selectedMonth}/${year}`, {
@@ -68,10 +69,11 @@ export default function page() {
 
         }).then((res: any) => {
             if (res && res.success !== false) {
-                
-              console.log("Payment Data:", res);
+
+                console.log("Payment Data:", res);
                 setStatus(res.data.paymentStatus);
                 setMonthAmount(res.data.amount)
+                setSelectedPayment(res.data.paymentMethod)
             } else {
                 redirect('/login')
             }
@@ -107,7 +109,7 @@ export default function page() {
 
     }, [year])
     const handleSubmit = () => {
-       
+
         const token = localStorage.getItem("token");
         setIsSubmitting(true);
         if (paymentMethod === "ONLINE") {
@@ -155,9 +157,13 @@ export default function page() {
                 .catch((error: any) => {
                     console.error("Upload Error:", error);
                     if (error.response?.data) {
-                        
+
                         console.error("Error details:", error.response.data);
                     }
+                    setSnackbarData({
+                        message: error?.response?.data?.message || "Something went wrong. Please try again.",
+                        severity: "error"
+                    })
                 })
                 .finally(() => {
                     setIsSubmitting(false);
@@ -166,7 +172,7 @@ export default function page() {
         }
         else if (paymentMethod === "CASH") {
             const formData = new FormData();
-            if ( !amount || !selectedMonth || !year) {
+            if (!amount || !selectedMonth || !year) {
                 setSnackbarData({
                     message: "Please fill all the required fields.",
                     severity: "error"
@@ -191,7 +197,7 @@ export default function page() {
             }, headers)
                 .then((res: any) => {
                     if (res.success) {
-                      
+
                         setSnackbarOpen(true);
                         setSnackbarData({
                             message: "form is successfully submitted",
@@ -205,12 +211,83 @@ export default function page() {
                     if (error.response?.data) {
                         console.error("Error details:", error.response.data);
                     }
+                    setSnackbarData({
+                        message: error?.response?.data?.message || "Something went wrong. Please try again.",
+                        severity: "error"
+                    })
                 })
                 .finally(() => {
                     setIsSubmitting(false);
                 });
 
         }
+
+    }
+    const handleSubmitReject = () => {
+
+        const token = localStorage.getItem("token");
+        setIsSubmitting(true);
+
+        if (!uploadedFile || !uploadedElectFile || !monthAmount || !selectedMonth || !year) {
+            setSnackbarData({
+                message: "Please fill all the required fields.",
+                severity: "error"
+            })
+            setSnackbarOpen(true);
+            setIsSubmitting(false);
+            return
+        }
+
+        const formData = new FormData();
+        formData.append("amount", monthAmount);
+        formData.append("month", selectedMonth);
+        formData.append("year", year);
+        formData.append("paymentMethod", selectedPayment);
+
+
+        // Add files to FormData if they exist
+        if (uploadedFile?.file) {
+            formData.append("rentBillScreenshot", uploadedFile.file);
+        }
+        if (uploadedElectFile?.file) {
+            formData.append("electricityBillScreenshot", uploadedElectFile.file);
+        }
+        // Make sure your postRequest function handles FormData correctly
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+        // Remove Content-Type to let browser set it automatically for FormData
+        delete (headers as any)['Content-Type'];
+        postRequest(`api/v1/user/payments/upload/online`, formData, headers)
+            .then((res: any) => {
+                if (res.success) {
+                    setSnackbarOpen(true);
+                    setSnackbarData({
+                        message: "form is successfully submitted",
+                        severity: "success"
+                    })
+                    // Refresh page or update state
+                }
+            })
+            .catch((error: any) => {
+                console.error("Upload Error:", error);
+                if (error.response?.data) {
+
+                    console.error("Error details:", error.response.data);
+                }
+                setSnackbarData({
+                    message: error?.response?.data?.message || "Something went wrong. Please try again.",
+                    severity: "error"
+                })
+                setSnackbarOpen(true);
+                setIsSubmitting(false);
+            })
+            .finally(() => {
+                setIsSubmitting(false);
+            });
+
+
+
 
     }
     const handleSnackbarClose = () => {
@@ -280,7 +357,7 @@ export default function page() {
 
                                 {/* <ButtonComponent isEndIcon={false} disabled bgColor="bg-primary-50" isStartIcon={true} buttonText="Payment Type" baseClassName="" buttonIcon={<MdPayment />} /> */}
                                 <Button
-                                    onPress={handleSubmit}
+                                    // onPress={handleSubmit}
                                     className="w-auto h-auto p-3 bg-primary-50 text-white rounded-xl"
                                 >
                                     {/* <IoFolderOutline className="w-4 h-4 font-bold" /> */}
@@ -327,37 +404,21 @@ export default function page() {
                             </h3>
                             <PayMentScreenShoot uploadedFile={uploadedElectFile} setUploadedFile={setUploadedElectFile} />
                             <div className="border py-1 my-4 border-gray-300 w-full shadow-sm overflow-hidden rounded-lg px-4 flex justify-between items-center">
-
                                 <Checkbox radius="full" color="success" isSelected={paymentMethod === "CASH"} onChange={() => setPaymentMethod("CASH")} isDisabled={isSubmitting || isLoading}></Checkbox>
-
                                 <Select
-
                                     variant="flat"
-
                                     classNames={{
-
                                         base: "w-full bg-transparent border-none shadow-none",
-
                                         trigger:
-
                                             "bg-transparent border-none shadow-none focus:ring-0 focus:outline-none hover:!bg-transparent data-[hover=true]:!bg-transparent",
-
                                         value: "text-gray-700",
-
                                         listboxWrapper: "border border-gray-300 rounded-lg",
-
                                     }}
-
                                     placeholder="Cash Payment"
-
                                 >
-
                                     <SelectItem className="w-full border-b border-gray-200 last:border-none">
-
                                         Cash
-
                                     </SelectItem>
-
                                 </Select>
 
                             </div>
@@ -392,10 +453,10 @@ export default function page() {
                     }
                     {status === "REJECTED" && (
                         <div className="space-y-2">
-                            <div className="flex items-center my-1 gap-3 shadow-md bg-orange-500 border-0 border-orange-600 text-gray-900 px-4 py-3 rounded-lg">
+                            <div className="flex items-center my-1 gap-3 shadow-md bg-orange-300 border-0 border-orange-600 text-gray-900 px-4 py-3 rounded-lg">
                                 <HiOutlineExclamationTriangle className="text-xl font-bold" />
                                 <div>
-                                    <h2 className="text-lg font-bold">
+                                    <h2 className="text-lg font-semibold">
                                         Your payment screenshoot has been rejected by the admin.
                                     </h2>
                                     <p>
@@ -403,6 +464,7 @@ export default function page() {
                                         to resolve.
                                     </p>
                                 </div>
+
                             </div>
                             <div className="border px-5 py-3 mb-4 rounded-lg mt-3">
                                 <h3 className="font-semibold text-lg mb-2">Rejection Reason</h3>
@@ -418,8 +480,20 @@ export default function page() {
                                     ))}
                                 </div>
                             </div>
+                            <div className="flex justify-between items-center">
+                            <div className="">
                             <h2 className="text-xl font-bold">Upload Payment Screenshot</h2>
                             <p>Upload your rent payment receipt/screenshot as proof of payment</p>
+                                </div>
+                                    <Button
+                                        onPress={handleSubmitReject}
+                                        isDisabled={isSubmitting || isLoading}
+                                        className="bg-primary-800 hover:bg-primary-800 text-white  p-2  w-auto h-auto rounded-2xl font-medium transition-colors flex items-center "
+                                    >
+                                        {isSubmitting && <Spinner size="sm" color="white" className="mr-2" />}
+                                        <span>{isSubmitting ? 'Submitting...' : 'Submit'}</span>
+                                    </Button>
+                                </div>
                             <PayMentScreenShoot uploadedFile={uploadedFile} setUploadedFile={setUploadedFile} />
                             <h2 className="text-xl font-bold">
                                 Upload Electricity Payment Screenshot
@@ -455,9 +529,22 @@ export default function page() {
                             </div>
                         </div>
                     }
+                    {
+                        status === "REJECTED" &&
+
+                        <div className="my-2 max-w-sm">
+                            <NoteProof content="Make sure your screenshot is clear
+                        and complete before uploading. Once
+                        approved, your payment will be
+                        marked as Paid for the selected month." />
+
+                        </div>
+                        
+                    }
+                        <div className="mb-5"></div>
                 </>
             )}
-            
+
             {/* <Modals size={"lg"} width="1029px" hideCloseButton ModalContents={<ModelContent/>} isopen={openModel} onClose={() => setOpenModel(false)} /> */}
 
         </div>
