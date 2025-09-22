@@ -8,9 +8,14 @@ import SnackBar from "../snackBar";
 
 export const Login = () => {
   const router = useRouter();
+  const [reset, setReset] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [newPassword, setNewPassword] = useState({
+    newPassword: "",
+    confirmPassword: ""
+  });
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackBarData, setSnackbarData] = useState<
     {
@@ -22,16 +27,60 @@ export const Login = () => {
     })
   const handleLogin = () => {
     setIsLoading(true);
+    const token = localStorage.getItem("token");
+    if(reset){
+    
+      postRequest("api/v1/user/reset-password", { email, newPassword:newPassword.newPassword,confirmPassword:newPassword.confirmPassword },
+        { authorization: `Bearer ${token}` }
+      )
+        .then((res: any) => {
+          setIsLoading(false);
+
+          // Check if login was successful - adjust this condition based on your API response structure
+          if (res && res.success !== false) {
+            
+
+            router.push("/user/dashboard");
+            setSnackbarData({
+              message: "Login successful!",
+              severity: "success"
+            })
+            setSnackbarOpen(true);
+          } else {
+            setSnackbarData({
+              message: res?.message || res?.error || "Login failed. Please try again.",
+              severity: "error"
+            })
+            setSnackbarOpen(true);
+            console.error("Login failed:", res?.message || res?.error || "Unknown error");
+          }
+        })
+        .catch((error) => {
+          console.error("Login request failed:", error);
+          setIsLoading(false);
+          setSnackbarData({
+            message: "Login failed. Please try again.",
+            severity: "error"
+          })
+          setSnackbarOpen(true);
+          // Handle network errors or other failures
+        });
+        return;
+
+    }
+    console.log({email,password})
     postRequest("api/v1/user/login", { email, password })
       .then((res: any) => {
-        console.log("Login Response:", res);
         setIsLoading(false);
 
         // Check if login was successful - adjust this condition based on your API response structure
         if (res && res.success !== false) {
           // Redirect to dashboard on success
           localStorage.setItem("token", res.data.token);
-
+          setReset(res.data.requirePasswordSetup);
+          if(res.data.requirePasswordSetup){
+            return;
+          }
           router.push("/user/dashboard");
           setSnackbarData({
             message: "Login successful!",
@@ -81,9 +130,9 @@ export const Login = () => {
           </h2>
 
           <div className="flex flex-col gap-6">
-            {/* Username */}
+            {/* Email */}
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold">Username</label>
+              <label className="text-sm font-semibold">Email</label>
               <InputField
                 value={email}
                 inputOnChange={(e) => setEmail(e.target.value)}
@@ -93,7 +142,7 @@ export const Login = () => {
             </div>
 
             {/* Password */}
-            <div className="flex flex-col gap-2">
+           {!reset && <div className="flex flex-col gap-2">
               <label className="text-sm font-semibold">Password</label>
               <InputField
                 type="password"
@@ -102,7 +151,27 @@ export const Login = () => {
                 inputWrapperClassName="h-[3rem]"
                 mainWrapperClassName=" rounded-md !bg-transparent"
               />
-            </div>
+            </div>}
+            {reset && <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold">New Password</label>
+              <InputField
+                type="password"
+                inputOnChange={(e) => setNewPassword({...newPassword,newPassword:e.target.value})}
+                value={newPassword.newPassword}
+                inputWrapperClassName="h-[3rem]"
+                mainWrapperClassName=" rounded-md !bg-transparent"
+              />
+            </div>}
+            {reset && <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold">Confirm Password</label>
+              <InputField
+                type="password"
+                inputOnChange={(e) => setNewPassword({ ...newPassword, confirmPassword: e.target.value })}
+                value={newPassword.confirmPassword}
+                inputWrapperClassName="h-[3rem]"
+                mainWrapperClassName=" rounded-md !bg-transparent"
+              />
+            </div>}
           </div>
 
           {/* Button */}
