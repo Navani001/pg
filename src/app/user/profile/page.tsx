@@ -152,7 +152,7 @@ export default function Profile() {
 
             <Input
               isReadOnly
-              value={formData.advanceAmount+''}
+              value={formData.advanceAmount + ''}
               labelPlacement="outside"
               label="Advance Amount"
               defaultValue="2-Sharing"
@@ -194,7 +194,7 @@ export default function Profile() {
               labelPlacement="outside"
               defaultValue="₹8,500"
               classNames={{
-                base:"mt-3 pt-1",
+                base: "mt-3 pt-1",
                 label: "text-base text-gray-900 font-['Poppins']",
               }}
               variant="bordered"
