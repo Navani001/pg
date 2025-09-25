@@ -5,8 +5,8 @@ import { redirect } from "next/dist/client/components/navigation";
 import { useEffect, useState } from "react";
 import { RiFolderUserFill } from "react-icons/ri";
 import { CalendarDate, parseDate } from "@internationalized/date";
-declare global{
-  interface localStorage{
+declare global {
+  interface localStorage {
 
   }
 }
@@ -24,14 +24,14 @@ export default function Profile() {
     "pgName": "MRM Mens PG - 2",
     "roomNumber": "108",
     "pgLocation": "Thambaram",
-    "dateOfJoining": "2025-09-18T14:11:26.711Z",
+    "dateOfJoining": null as CalendarDate | null,
     "monthlyRent": 7500,
     "advanceAmount": 0
 
   });
 
   // Helper function to convert ISO string to CalendarDate
- const convertISOToCalendarDate = (isoString: string): CalendarDate | null => {
+  const convertISOToCalendarDate = (isoString: string): CalendarDate | null => {
     if (!isoString) return null;
     try {
       const date = new Date(isoString);
@@ -48,7 +48,7 @@ export default function Profile() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     getRequest(`api/v1/user/profile`, { authorization: `Bearer ${token}` }).then((res: any) => {
-     
+
       if (res && res.success !== false) {
         setFormData((prev) => ({
           ...prev,
@@ -63,7 +63,7 @@ export default function Profile() {
           "pgName": res.data.pgDetails.pgName || "MRM Mens PG - 2",
           "roomNumber": res.data.pgDetails.roomNumber || "108",
           "pgLocation": res.data.pgDetails.pgLocation || "Thambaram",
-          "dateOfJoining": res.data.pgDetails.dateOfJoining || "2025-09-18T14:11:26.711Z",
+          "dateOfJoining": convertISOToCalendarDate(res.data.pgDetails.dateOfJoining || "2025-09-18T14:11:26.711Z"),
           "monthlyRent": res.data.pgDetails.monthlyRent || 7500,
           "advanceAmount": res.data.pgDetails.advanceAmount || 0
         }));
@@ -73,7 +73,7 @@ export default function Profile() {
     });
 
   }, [])
-  
+
   const handleInputChange = (e: { target: { name: any; value: any } }) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -85,7 +85,7 @@ export default function Profile() {
   const handleUpdateDetails = () => {
     const token = localStorage.getItem("token");
 
-    putRequest(`api/v1/user/profile`,{
+    putRequest(`api/v1/user/profile`, {
       "name": formData.fullName,
       "dob": formData.dateOfBirth ? formData.dateOfBirth.toString() : null,
       "phone": formData.phoneNumber,
@@ -97,13 +97,13 @@ export default function Profile() {
   return (
     <div className="h-full p-4 md:p-6 w-full overflow-y-scroll scrollbar-hide">
       {/* Personal Details Section */}
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">
+      <h2 className="text-xl font-semibold text-gray-900 mb-4 font-['Poppins']">
         Personal Details
       </h2>
       <div className="bg-white rounded-lg shadow-md border border-gray-200 mb-6">
         <div className="p-6 border-b border-gray-200 md:flex w-full justify-between items-center">
-          <h3 className="text-lg font-medium text-gray-900">PG Details</h3>
-          <p className="text-base text-gray-600">
+          <h3 className="text-lg font-medium text-gray-900 font-['Poppins']">PG Details</h3>
+          <p className="text-base text-gray-600 font-['Poppins']">
             Assigned by admin. These details are read-only
           </p>
         </div>
@@ -117,7 +117,7 @@ export default function Profile() {
               value={formData.pgName}
               labelPlacement="outside"
               classNames={{
-                label: "text-base text-gray-900",
+                label: "text-base text-gray-900 font-['Poppins']",
               }}
               defaultValue="MRM PG"
               variant="bordered"
@@ -131,7 +131,7 @@ export default function Profile() {
               labelPlacement="outside"
               defaultValue="413-A"
               classNames={{
-                label: "text-base text-gray-900",
+                label: "text-base text-gray-900 font-['Poppins']",
               }}
               variant="bordered"
               className="w-full"
@@ -145,25 +145,25 @@ export default function Profile() {
               defaultValue="Chennai"
               variant="bordered"
               classNames={{
-                label: "text-base text-gray-900",
+                label: "text-base text-gray-900 font-['Poppins']",
               }}
               className="w-full"
             />
 
             <Input
               isReadOnly
-              value={formData.pgLocation}
+              value={formData.advanceAmount+''}
               labelPlacement="outside"
-              label="PG Location"
+              label="Advance Amount"
               defaultValue="2-Sharing"
               variant="bordered"
               classNames={{
-                label: "text-base text-gray-900",
+                label: "text-base text-gray-900 font-['Poppins']",
               }}
               className="w-full"
             />
 
-            <Input
+            {/* <Input
               isReadOnly
               value={formData.monthlyRent.toString()}
               labelPlacement="outside"
@@ -174,8 +174,19 @@ export default function Profile() {
                 label: "text-base text-gray-900",
               }}
               className="w-full"
+            /> */}
+            <DatePicker
+              isReadOnly
+              label="Date of Joining"
+              value={formData.dateOfJoining}
+              onChange={(date) => setFormData(prev => ({ ...prev, dateOfBirth: date }))}
+              classNames={{
+                label: "text-base text-gray-900 font-['Poppins']",
+                inputWrapper: "h-[40px]",
+              }}
+              variant="bordered"
+              labelPlacement="outside"
             />
-
             <Input
               isReadOnly
               value={`₹${formData.monthlyRent}`}
@@ -183,7 +194,8 @@ export default function Profile() {
               labelPlacement="outside"
               defaultValue="₹8,500"
               classNames={{
-                label: "text-base text-gray-900",
+                base:"mt-3 pt-1",
+                label: "text-base text-gray-900 font-['Poppins']",
               }}
               variant="bordered"
               className="w-full"
@@ -194,7 +206,7 @@ export default function Profile() {
 
       {/* Basic Information Section */}
       <div className="bg-white rounded-lg border border-gray-200 mb-6 shadow-md">
-        <h3 className="text-lg font-medium text-gray-900 border-b p-6">
+        <h3 className="text-lg font-medium text-gray-900 border-b p-6 font-['Poppins']">
           Basic Information
         </h3>
 
@@ -202,13 +214,13 @@ export default function Profile() {
           {/* Full Name */}
           <div className="flex flex-col justify-end">
             <Input
-            name="fullName"
+              name="fullName"
               value={formData.fullName}
               variant="bordered"
-              label="fullName"
+              label="Full Name"
               labelPlacement="outside"
               classNames={{
-                label: "text-base text-gray-900",
+                label: "text-base text-gray-900 font-['Poppins']",
                 inputWrapper: "h-[40px]",
               }}
               onChange={handleInputChange}
@@ -219,12 +231,12 @@ export default function Profile() {
           {/* Date of Birth */}
           <div className="flex flex-col justify-end">
             <DatePicker
-            
+
               label="Date of Birth"
               value={formData.dateOfBirth}
               onChange={(date) => setFormData(prev => ({ ...prev, dateOfBirth: date }))}
               classNames={{
-                label: "text-base text-gray-900",
+                label: "text-base text-gray-900 font-['Poppins']",
                 inputWrapper: "h-[40px]",
               }}
               variant="bordered"
@@ -238,13 +250,13 @@ export default function Profile() {
               name="Gender"
               value={formData.gender}
               variant="bordered"
-              label="Work Type"
+              label="Gender"
               labelPlacement="outside"
               classNames={{
-                label: "text-base text-gray-900",
+                label: "text-base text-gray-900 font-['Poppins']",
                 inputWrapper: "h-[40px]",
               }}
-          
+
             />
             {/* <Select
               label="Gender"
@@ -278,7 +290,7 @@ export default function Profile() {
 
           {/* Work Type */}
           <div>
-            
+
             <Input
               name="workType"
               value={formData.workType}
@@ -286,7 +298,7 @@ export default function Profile() {
               label="Work Type"
               labelPlacement="outside"
               classNames={{
-                label: "text-base text-gray-900",
+                label: "text-base text-gray-900 font-['Poppins']",
                 inputWrapper: "h-[40px]",
               }}
               onChange={handleInputChange}
@@ -313,7 +325,7 @@ export default function Profile() {
                 </SelectItem>
               ))}
             </Select> */}
-            <p className="text-sm text-gray-600 mt-4">
+            <p className="text-sm text-gray-600 mt-4 font-['Poppins']">
               Work Type helps us understand your occupation (e.g., for routine
               rules or ID verification).
             </p>
@@ -324,7 +336,7 @@ export default function Profile() {
       {/* Contact Information Section */}
       <div className="bg-white rounded-lg shadow-md border border-gray-200 mb-6">
         <div className="p-6 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-gray-900">
+          <h3 className="text-lg font-medium text-gray-900 font-['Poppins']">
             Contact Information
           </h3>
         </div>
@@ -337,9 +349,9 @@ export default function Profile() {
               name="phoneNumber"
               labelPlacement="outside"
               classNames={{
-                label: "text-base text-gray-900",
+                label: "text-base text-gray-900 font-['Poppins']",
               }}
-              label="phoneNumber"
+              label="Phone Number"
               value={formData.phoneNumber}
               onChange={handleInputChange}
               variant="bordered"
@@ -347,19 +359,19 @@ export default function Profile() {
             />
 
             {/* Alternate Phone */}
-            <Input
+            {/* <Input
               type="tel"
               labelPlacement="outside"
-              name="advanceAmount"
-              label="Advance Amount"
-              value={formData?.advanceAmount.toString()}
+              name="alternatePhone"
+              label="Alternate Phone Number"
+              value={formData.alternatePhone}
               classNames={{
                 label: "text-base text-gray-900",
               }}
               onChange={handleInputChange}
               variant="bordered"
               className="w-full"
-            />
+            /> */}
 
             {/* Email Address */}
             <Input
@@ -368,7 +380,7 @@ export default function Profile() {
               name="emailAddress"
               label="Email Address"
               classNames={{
-                label: "text-base text-gray-900",
+                label: "text-base text-gray-900 font-['Poppins']",
               }}
               value={formData.emailAddress}
               onChange={handleInputChange}
@@ -380,11 +392,11 @@ export default function Profile() {
             <Input
               type="text"
               classNames={{
-                label: "text-base text-gray-900",
+                label: "text-base text-gray-900 font-['Poppins']",
               }}
               name="address"
               labelPlacement="outside"
-              label="address"
+              label="Address"
               value={formData.address}
               onChange={handleInputChange}
               variant="bordered"
@@ -398,7 +410,7 @@ export default function Profile() {
       <div className="flex justify-end">
         <Button
           onPress={handleUpdateDetails}
-          className="px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+          className="px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 font-['Poppins']"
         >
           <RiFolderUserFill />
           Update Personal Details

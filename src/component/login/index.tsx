@@ -77,6 +77,9 @@ export const Login = () => {
         if (res && res.success !== false) {
           // Redirect to dashboard on success
           localStorage.setItem("token", res.data.token);
+          localStorage.setItem("name", res.data.member.name);
+
+
           setReset(res.data.requirePasswordSetup);
           if(res.data.requirePasswordSetup){
             return;

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Image } from "@heroui/react";
 import { IoReorderThree, IoClose } from "react-icons/io5";
 import { Sidebar } from "../sideBar";
+import { PopOverLogo } from "../popover";
 
 export const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,7 +39,7 @@ export const NavBar = () => {
         </div>
 
         {/* Profile Image */}
-        <Image
+        {/* <Image
           src="https://plus.unsplash.com/premium_photo-1690407617542-2f210cf20d7e?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fHww"
           radius="full"
           loading="lazy"
@@ -48,7 +49,8 @@ export const NavBar = () => {
             img: "object-cover",
           }}
           alt="profile"
-        />
+        /> */}
+        <PopOverLogo/>
       </div>
 
       {/* Sidebar Overlay (mobile only) */}

@@ -1,7 +1,10 @@
 import { LandingNavBar } from "@/component/landingHeader";
 import Landing from "./landing/page";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
+
+  redirect("/login")
   return <div className="h-[100dvh] w-[100dvw] overflow-hidden">
     <div className="h-[10%] w-full">
       <LandingNavBar />
