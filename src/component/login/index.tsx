@@ -1,9 +1,9 @@
 "use client";
+import { postRequest } from "@/utils";
+import { Input } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ButtonComponent } from "../button";
-import { InputField } from "../input";
-import { getRequest, postRequest } from "@/utils";
+import { FaEnvelope, FaEyeSlash, FaLock, FaRegEye } from "react-icons/fa";
 import SnackBar from "../snackBar";
 
 export const Login = () => {
@@ -11,72 +11,68 @@ export const Login = () => {
   const [reset, setReset] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [newPassword, setNewPassword] = useState({
     newPassword: "",
     confirmPassword: ""
   });
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackBarData, setSnackbarData] = useState<
-    {
-      message: string,
-      severity: 'success' | 'error' | 'info' | 'warning'
-    }>({
-      message: "test",
-      severity: "success"
-    })
+  const [snackBarData, setSnackbarData] = useState<{
+    message: string;
+    severity: "success" | "error" | "info" | "warning";
+  }>({
+    message: "test",
+    severity: "success",
+  });
   const handleLogin = () => {
     setIsLoading(true);
     const token = localStorage.getItem("token");
     if(reset){
-    
       postRequest("api/v1/user/reset-password", { email, newPassword:newPassword.newPassword,confirmPassword:newPassword.confirmPassword },
         { authorization: `Bearer ${token}` }
       )
         .then((res: any) => {
+          console.log("Password Reset Response:", res);
           setIsLoading(false);
 
-          // Check if login was successful - adjust this condition based on your API response structure
           if (res && res.success !== false) {
-            
-
             router.push("/user/dashboard");
             setSnackbarData({
-              message: "Login successful!",
+              message: "Password reset successful!",
               severity: "success"
             })
             setSnackbarOpen(true);
           } else {
             setSnackbarData({
-              message: res?.message || res?.error || "Login failed. Please try again.",
+              message: res?.message || res?.error || "Password reset failed. Please try again.",
               severity: "error"
             })
             setSnackbarOpen(true);
-            console.error("Login failed:", res?.message || res?.error || "Unknown error");
+            console.error("Password reset failed:", res?.message || res?.error || "Unknown error");
           }
         })
         .catch((error) => {
-          console.error("Login request failed:", error);
+          console.error("Password reset request failed:", error);
           setIsLoading(false);
           setSnackbarData({
-            message: "Login failed. Please try again.",
+            message: "Password reset failed. Please try again.",
             severity: "error"
           })
           setSnackbarOpen(true);
-          // Handle network errors or other failures
         });
         return;
-
     }
-    console.log({email,password})
+
     postRequest("api/v1/user/login", { email, password })
       .then((res: any) => {
+        console.log("Login Response:", res);
         setIsLoading(false);
 
-        // Check if login was successful - adjust this condition based on your API response structure
         if (res && res.success !== false) {
-          // Redirect to dashboard on success
           localStorage.setItem("token", res.data.token);
+          localStorage.setItem("name", res.data.member.name);
+
           setReset(res.data.requirePasswordSetup);
           if(res.data.requirePasswordSetup){
             return;
@@ -100,93 +96,162 @@ export const Login = () => {
         console.error("Login request failed:", error);
         setIsLoading(false);
         setSnackbarData({
-          message:  "Login failed. Please try again.",
+          message: "Login failed. Please try again.",
           severity: "error"
         })
         setSnackbarOpen(true);
-        // Handle network errors or other failures
       });
   };
 
   return (
-    <div className="w-[100%] xl:w-[70%] lg:w-[75%] mx-auto h-[70%] lg:h-[85vh] rounded-2xl border border-white/40 flex flex-col md:flex-row justify-center items-center backdrop-blur-md shadow-lg p-4 sm:p-6 font-medium">
-      {/* Left Image Section */}
+    <div className="min-h-screen w-full relative overflow-hidden">
+      {/* SnackBar */}
       <SnackBar
         open={snackbarOpen}
         onClose={() => setSnackbarOpen(false)}
         message={snackBarData.message}
         severity={snackBarData.severity}
         autoHideDuration={4000}
-      /> 
-      <div className="hidden h-full lg:h-[85%] w-full md:flex md:w-1/2 lg:w-2/5 items-center justify-center">
-        <div className="w-full h-full sm:h-[400px] lg:h-full bg-[url('/loginImage.jpg')] bg-cover bg-center rounded-2xl shadow-md" />
+      />
+
+      {/* Background Image with Orange Overlay */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url('https://i.pinimg.com/736x/b0/1d/90/b01d908e888398a74c4ed067d31e040b.jpg')`,
+        }}
+      >
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-100/20 via-black/10 to-gray-900/50"></div>
       </div>
 
-      {/* Right Login Form Section */}
-      <div className="w-full lg:h-[70%] md:w-1/2 xl:w-3/5  flex items-center justify-center">
-        <div className="w-full h-full   bg-white/25 backdrop-blur-lg rounded-2xl md:rounded-l-none md:rounded-r-2xl shadow-md p-6 sm:p-8 flex flex-col justify-between">
-          <h2 className="text-xl sm:text-2xl font-bold text-center mb-6">
-            Login
-          </h2>
-
-          <div className="flex flex-col gap-6">
-            {/* Email */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold">Email</label>
-              <InputField
-                value={email}
-                inputOnChange={(e) => setEmail(e.target.value)}
-                inputWrapperClassName="h-[3rem]"
-                mainWrapperClassName=" rounded-md !bg-transparent"
-              />
+      {/* Content Container */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+        {/* Login Form Container */}
+        <div className="w-full max-w-md">
+          <div className="backdrop-blur-lg bg-white/20 rounded-3xl p-8 shadow-2xl border border-white/30">
+            {/* Welcome Header */}
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold text-white mb-2 font-['Poppins']">
+                {reset ? "Reset Password" : "Welcome!"}
+              </h1>
+              <p className="text-white/90 text-sm font-['Poppins']">
+                {reset ? "Set up your new password" : "Sign in to continue"}
+              </p>
             </div>
 
-            {/* Password */}
-           {!reset && <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold">Password</label>
-              <InputField
-                type="password"
-                inputOnChange={(e) => setPassword(e.target.value)}
-                value={password}
-                inputWrapperClassName="h-[3rem]"
-                mainWrapperClassName=" rounded-md !bg-transparent"
-              />
-            </div>}
-            {reset && <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold">New Password</label>
-              <InputField
-                type="password"
-                inputOnChange={(e) => setNewPassword({...newPassword,newPassword:e.target.value})}
-                value={newPassword.newPassword}
-                inputWrapperClassName="h-[3rem]"
-                mainWrapperClassName=" rounded-md !bg-transparent"
-              />
-            </div>}
-            {reset && <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold">Confirm Password</label>
-              <InputField
-                type="password"
-                inputOnChange={(e) => setNewPassword({ ...newPassword, confirmPassword: e.target.value })}
-                value={newPassword.confirmPassword}
-                inputWrapperClassName="h-[3rem]"
-                mainWrapperClassName=" rounded-md !bg-transparent"
-              />
-            </div>}
-          </div>
+            {/* Login Form */}
+            <div className="space-y-5">
+              <div className="">
+                <Input
+                  label="Email"
+                  placeholder="Enter your email"
+                  type="email"
+                  isRequired
+                  labelPlacement="outside"
+                  variant="bordered"
+                  classNames={{
+                    label: "text-sm text-white font-['Poppins']",
+                    inputWrapper: "h-[40px]",
+                  }}
+                  startContent={<FaEnvelope className="text-gray-400" />}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
 
-          {/* Button */}
-          <div className="flex justify-center mt-6">
-            <ButtonComponent
-              buttonText={isLoading ? "Loading..." : "Login"}
-              textClassName="text-base font-semibold"
-              baseClassName="bg-gradient-to-r from-red-500 to-pink-500 px-8 sm:px-10 py-2 rounded-lg text-white shadow-md hover:opacity-90 transition"
-              isIcon={false}
-              handleOnClick={() => {
-                handleLogin();
-              }
-                // router.push("/dashboardLayout/dashboard")
-              }
-            />
+              {/* Password Input */}
+              {!reset && (
+                <div className="pt-1">
+                  <Input
+                    label="Password"
+                    placeholder="Enter your password"
+                    type={showPassword ? "text" : "password"}
+                    isRequired
+                    labelPlacement="outside"
+                    variant="bordered"
+                    classNames={{
+                      label: "text-sm text-white font-['Poppins']",
+                      inputWrapper: "h-[40px]",
+                    }}
+                    startContent={<FaLock className="text-gray-400" />}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    endContent={
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="focus:outline-none flex h-full items-center"
+                      >
+                        {showPassword ? (
+                          <FaEyeSlash className="text-xl text-default-400 pointer-events-none" />
+                        ) : (
+                          <FaRegEye className="text-xl text-default-400 pointer-events-none" />
+                        )}
+                      </button>
+                    }
+                  />
+                </div>
+              )}
+
+              {/* New Password Input */}
+              {reset && (
+                <div className="pt-1">
+                  <Input
+                    label="New Password"
+                    placeholder="Enter your new password"
+                    type="password"
+                    isRequired
+                    labelPlacement="outside"
+                    variant="bordered"
+                    classNames={{
+                      label: "text-sm text-white font-['Poppins']",
+                      inputWrapper: "h-[40px]",
+                    }}
+                    startContent={<FaLock className="text-gray-400" />}
+                    value={newPassword.newPassword}
+                    onChange={(e) => setNewPassword({...newPassword, newPassword: e.target.value})}
+                  />
+                </div>
+              )}
+
+              {/* Confirm Password Input */}
+              {reset && (
+                <div className="pt-1">
+                  <Input
+                    label="Confirm Password"
+                    placeholder="Confirm your new password"
+                    type="password"
+                    isRequired
+                    labelPlacement="outside"
+                    variant="bordered"
+                    classNames={{
+                      label: "text-sm text-white font-['Poppins']",
+                      inputWrapper: "h-[40px]",
+                    }}
+                    startContent={<FaLock className="text-gray-400" />}
+                    value={newPassword.confirmPassword}
+                    onChange={(e) => setNewPassword({...newPassword, confirmPassword: e.target.value})}
+                  />
+                </div>
+              )}
+
+              {/* Login Button */}
+              <button
+                onClick={handleLogin}
+                disabled={isLoading}
+                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-semibold py-2 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-indigo-500/50 shadow-lg font-['Poppins']"
+              >
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Loading...
+                  </div>
+                ) : (
+                  reset ? "RESET PASSWORD" : "LOGIN"
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
